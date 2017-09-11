@@ -12,6 +12,6 @@ server.get('/', function (req, res) {
   res.send('Hello World!')
 })
 
-server.listen(config.port, config.ip function () {
+server.listen(config.port, config.ip, function () {
   console.log('cChange API running on port 3000');
 })
