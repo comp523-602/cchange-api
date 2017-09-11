@@ -1,0 +1,22 @@
+{
+  "name": "cchange-api",
+  "version": "1.0.0",
+  "description": "NodeJS server for cChange",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comp523-602/cchange-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/comp523-602/cchange-api/issues"
+  },
+  "homepage": "https://github.com/comp523-602/cchange-api#readme",
+  "dependencies": {
+    "express": "^4.15.4"
+  }
+}
