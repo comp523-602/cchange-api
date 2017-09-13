@@ -1,17 +1,61 @@
 
 // Initialize dependencies
-const express = require('express');
+const Express = require('express');
+const Mongoose = require('mongoose');
+const Async = require('async');
 
 // Initialize config
 const config = require('./config');
 
-// Setup server
-const server = express();
+// Initialize server
+const server = Express();
 
-server.get('/', function (req, res) {
-  res.send('Hello World!')
-})
+// Startup functions ===========================================================
 
-server.listen(config.port, config.ip, function () {
-  console.log('cChange API running on port 3000');
-})
+// Start Database: connects to database using config settings
+function startDatabase (callback) {
+	console.log('Connecting to database...');
+
+	// Connect to database
+	Mongoose.connect(config.database, {
+		'useMongoClient': true,
+	});
+
+	// Callback upon success
+	Mongoose.connection.once('open', function () {
+		console.log('Connected to database!')
+		callback();
+	});
+
+	// Listen for error
+	Mongoose.connection.on('error', console.error.bind(console, 'Database error:'))
+};
+
+// Start Server: listens to ip:port using config settings
+function startServer (callback) {
+	console.log('Starting server...')
+	server.listen(config.port, config.ip, function () {
+		console.log('Server listening on '+config.ip+':'+config.port+'...');
+		callback();
+	})
+};
+
+// Run startup functions =======================================================
+
+Async.waterfall([
+
+	function (callback) {
+		startDatabase(function () {
+			callback();
+		})
+	},
+
+	function (callback) {
+		startServer(function () {
+			callback();
+		});
+	},
+
+], function (err) {
+
+});
