@@ -1,6 +1,7 @@
 
 // Initialize dependencies
 const Express = require('express');
+const BodyParser = require('body-parser');
 const Mongoose = require('mongoose');
 const Async = require('async');
 
@@ -34,7 +35,17 @@ function startDatabase (callback) {
 // Start Server: listens to ip:port using config settings
 function startServer (callback) {
 	console.log('Starting server...')
+
+	// Setup express plugins
+	server.use(BodyParser.json());
+
+	// Start listening to port
 	server.listen(config.port, config.ip, function () {
+
+		// Attach routes
+		require('./api/Routes')(server);
+
+		// Callback upon success
 		console.log('Server listening on '+config.ip+':'+config.port+'...');
 		callback();
 	})
