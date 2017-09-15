@@ -4,7 +4,7 @@ module.exports = function (server) {
 
 	// Welcome
 	server.get('/', function (request, response, next) {
-		console.log('Welcome to the cChange API');
+		response.send('Welcome to the cChange API');
 	});
 
 	require('./routes/Authentication')(server);
