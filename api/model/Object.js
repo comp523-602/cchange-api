@@ -53,7 +53,7 @@ function ObjectProperties (schema) {
 function ObjectStaticMethods (schema) {
 
 	// GUID: returns a unique GUID
-	schema.statics.GUID = function GUID(callback) {
+	schema.statics.GUID = function (callback) {
 
 		// Save reference to model object
 		var model = this;
