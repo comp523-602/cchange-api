@@ -63,6 +63,7 @@ module.exports = function (server) {
 			if (!err) {
 				reply.message = 'Success!';
 				response.json(reply);
+				console.log('auth.create success!');
 			} else {
 				response.status(500).json({
 					'message': err
