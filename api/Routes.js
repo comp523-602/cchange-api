@@ -2,9 +2,9 @@
 // Attach middleware and all routing files to server
 module.exports = function (server) {
 
-	// All Requests
-	server.all('/', function (request, response, next) {
-
+	// Welcome
+	server.get('/', function (request, response, next) {
+		console.log('Welcome to the cChange API');
 	});
 
 	require('./routes/Authentication')(server);
