@@ -3,11 +3,11 @@
 module.exports = function (server) {
 
 	// CORS Headers
-	app.use(function (req, res, next) {
-	    res.setHeader('Access-Control-Allow-Origin', '*');
-	    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-	    res.setHeader('Access-Control-Allow-Credentials', true);
+	server.use(function (request, response, next) {
+	    response.setHeader('Access-Control-Allow-Origin', '*');
+	    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+	    response.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+	    response.setHeader('Access-Control-Allow-Credentials', true);
 	    next();
 	});
 
