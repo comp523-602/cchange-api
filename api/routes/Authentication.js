@@ -16,6 +16,9 @@ module.exports = function (server) {
 	// Auth Create: creates a new user and returns authentication
 	server.post('/auth.create', function (request, response, next) {
 
+		console.log('auth.create incoming...');
+		console.log(request.body);
+
 		// Setup reply
 		var reply = {};
 
