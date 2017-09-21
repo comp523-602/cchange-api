@@ -38,15 +38,15 @@ function UserStaticMethods (schema) {
 	// Create: creates a new user in the database
 	schema.statics.create = function ({name, email, password}, callback) {
 
-		// Save reference to UserModel
-		var UserModel = this;
+		// Save reference to model
+		var User = this;
 
 		// Synchronously perform the following tasks, then make callback...
 		Async.waterfall([
 
 			// Generate a unique GUID
 			function (callback) {
-				UserModel.GUID(function (err, GUID) {
+				User.GUID(function (err, GUID) {
 					callback(err, GUID);
 				})
 			},
@@ -71,7 +71,7 @@ function UserStaticMethods (schema) {
 
 				// Make database update
 				Database.update({
-					'model': UserModel,
+					'model': User,
 					'query': query,
 					'update': update,
 				}, function (err, user) {

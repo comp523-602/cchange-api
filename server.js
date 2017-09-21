@@ -4,6 +4,7 @@ const Express = require('express');
 const BodyParser = require('body-parser');
 const Mongoose = require('mongoose');
 const Async = require('async');
+const Morgan = require('morgan');
 
 // Initialize config
 const config = require('./config');
@@ -38,12 +39,13 @@ function startServer (callback) {
 
 	// Setup express plugins
 	server.use(BodyParser.json());
+	server.use(Morgan('dev'));
 
 	// Start listening to port
 	server.listen(config.port, config.ip, function () {
 
-		// Attach routes
-		require('./api/Routes')(server);
+		// Setup routing & middleware
+		require('./api/Routes/Routing')(server);
 
 		// Callback upon success
 		console.log('Server listening on '+config.ip+':'+config.port+'...');

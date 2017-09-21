@@ -1,8 +1,8 @@
 
-// Find One: finds a single object in the database
-module.exports.findOne = function ({model, query}, callback) {
+// Database.js: provides tools for accessing / updating the database
 
-	// Find object with Mongoose
+// Find One: finds a single object in the database using model
+module.exports.findOne = function ({model, query}, callback) {
     model.findOne(query, function (err, object) {
         callback(err, object);
     });

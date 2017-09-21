@@ -3,6 +3,15 @@
 const Uuid = require('uuid');
 const Database = require('./../tools/Database.js');
 
+// Initialize constants
+const unformattedKeys = [
+	"_id",
+	"__v",
+	"privateAccess",
+	"writeAccess",
+	"password"
+];
+
 // Object Properties: configures properties for database object
 function ObjectProperties (schema) {
     schema.add({
@@ -82,7 +91,12 @@ function ObjectStaticMethods (schema) {
 // Object Instance Methods: attaches functionality related to existing instances of the object
 function ObjectInstanceMethods (schema) {
 
-
+	// Format: formats a database object for sending back to users
+	schema.methods.format = function () {
+		var formattedObject = JSON.parse(JSON.stringify(this.toObject()));
+		for (var i in unformattedKeys) delete formattedObject[unformattedKeys[i]];
+		return formattedObject;
+	};
 
 };
 
