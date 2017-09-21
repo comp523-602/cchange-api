@@ -18,6 +18,7 @@ module.exports = function (server) {
 
 	// INCLUDE ROUTES
 	require('./User')(server);
+	require('./Charity')(server);
 	require('./CharityToken')(server);
 
 	// Handle errors

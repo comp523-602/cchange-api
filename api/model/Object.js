@@ -7,7 +7,6 @@ const Database = require('./../tools/Database.js');
 const unformattedKeys = [
 	"_id",
 	"__v",
-	"privateAccess",
 	"writeAccess",
 	"password"
 ];
@@ -29,13 +28,6 @@ function ObjectProperties (schema) {
             'index': true,
             'default': []
         },
-
-		// Private Access: a list of users that can access private properties on this object
-		'privateAccess': {
-			'type': [String],
-			'index': true,
-			'default': []
-		},
 
 		// Date Created: this time this object was created
 		'dateCreated': {

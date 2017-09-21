@@ -1,8 +1,8 @@
 
 // Initialize dependencies
 const Async = require('async');
-const Tokens = require('jsonwebtoken');
 const HashPassword = require('password-hash');
+const Authentication = require('./../tools/Authentication');
 const Database = require('./../tools/Database');
 const Validation = require('./../tools/Validation');
 const Secretary = require('./../tools/Secretary');
@@ -61,11 +61,7 @@ module.exports = function (server) {
 
 			// Authenticate user, add token to request
 			function (user, callback) {
-				Tokens.sign({
-					'guid': user.guid
-				}, config.secret, {
-					'expiresIn': '3 days',
-				}, function (err, token) {
+				Authentication.makeUserToken(user, function (err, token) {
 					Secretary.addToResponse({
 						'response': res,
 						'key': "token",
@@ -176,11 +172,7 @@ module.exports = function (server) {
 
 			// Create an authentication token for user, add to reply
 			function (user, callback) {
-				Tokens.sign({
-					'guid': user.guid
-				}, config.secret, {
-					'expiresIn': '3 days',
-				}, function (err, token) {
+				Authentication.makeUserToken(user, function (err, token) {
 					Secretary.addToResponse({
 						'response': res,
 						'key': "token",

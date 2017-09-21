@@ -44,6 +44,9 @@ module.exports = {
 	conflictError: function (message) {
 		return createError(Messages.codes.conflictError, message);
 	},
+	authorizationError: function () {
+		return createError(Messages.codes.unauthorizedError, Messages.responses.unauthorized);
+	},
 	success: function (response) {
 		success(response);
 	},

@@ -3,14 +3,16 @@
 
 module.exports = {
 	'codes': {
+		'success': 200,
 		'serverError': 500,
 		'requestError': 400,
-		'conflictError': 409,
-		'success': 200
+		'unauthorizedError': 401,
+		'conflictError': 409
 	},
 	'responses': {
-		'serverError': 'A server error occured',
-		'success': 'Success'
+		'unauthorized': "Unauthorized",
+		'serverError': "A server error occured",
+		'success': "Success"
 	},
 	'typeErrors': {
 		'string': " is not a string",
@@ -28,5 +30,5 @@ module.exports = {
 		'charityTokenInvalid': "Your token is invalid",
 		'charityTokenUsed': "Your invitiation has already been used",
 		'charityTokenExpired': "Your invitation has expired",
-	}
+	},
 };
