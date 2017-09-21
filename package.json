@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/comp523-602/cchange-api#readme",
   "dependencies": {
+    "@sendgrid/mail": "^6.1.4",
     "async": "^2.5.0",
     "body-parser": "^1.18.1",
     "express": "^4.15.4",

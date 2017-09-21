@@ -2,8 +2,12 @@
 // Initialize dependencies
 const Mongoose = require('mongoose');
 const Async = require('async');
+const Tokens = require('jsonwebtoken');
 const Database = require('./../tools/Database');
 const Dates = require('./../tools/Dates');
+
+// Initialize config
+const config = require('./../../config');
 
 // Charity Token Properties: configures properties for database object
 function CharityTokenProperties (schema) {
@@ -33,7 +37,12 @@ function CharityTokenProperties (schema) {
 		'used': {
 			'type': Number,
 			'default': null,
-		}
+		},
+
+		// User: GUID of user created with token
+		'user': {
+			'type': String,
+		},
 
     });
 };
@@ -60,7 +69,8 @@ function CharityTokenStaticMethods (schema) {
 			// Generate a token based on email
 			function (GUID, callback) {
 				Tokens.sign({
-					'email': user.email
+					'guid': GUID,
+					'email': email,
 				}, config.secret, {}, function (err, token) {
 					callback(err, GUID, token);
 				});
@@ -91,7 +101,6 @@ function CharityTokenStaticMethods (schema) {
 					'query': query,
 					'update': update,
 				}, function (err, charityToken) {
-					console.log(charityToken);
 					callback(err, charityToken);
 				});
 			},
@@ -105,26 +114,27 @@ function CharityTokenStaticMethods (schema) {
 // Charity Token Instance Methods: attaches functionality related to existing instances of the object
 function CharityTokenInstanceMethods (schema) {
 
-	schema.methods.markUsed = function (callback) {
+	schema.methods.markUsed = function ({user}, callback) {
 
 		// Save reference to model
 		var CharityToken = this;
 
 		// Setup query with GUID
 		var query = {
-			'guid': GUID
+			'guid': this.guid,
 		};
 
 		// Setup database update
 		var update = {
 			'$set': {
 				'used': Dates.now(),
+				'user': user.guid,
 			}
 		};
 
 		// Make database update
 		Database.update({
-			'model': CharityToken,
+			'model': CharityToken.constructor,
 			'query': query,
 			'update': update,
 		}, function (err, charityToken) {
@@ -154,4 +164,4 @@ module.exports = function () {
 
 	// Return new model object
 	return charityToken;
-}
+}();

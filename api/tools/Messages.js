@@ -25,6 +25,8 @@ module.exports = {
 		'emailAlreadyUsed': "An account with this email already exists",
 		'emailNotFound': "Email not recognized",
 		'passwordIncorrect': "Incorrect password",
-		'chairtyTokenExpired': "Your invitation has expired",
+		'charityTokenInvalid': "Your token is invalid",
+		'charityTokenUsed': "Your invitiation has already been used",
+		'charityTokenExpired': "Your invitation has expired",
 	}
 };

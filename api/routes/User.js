@@ -13,8 +13,8 @@ const Dates = require('./../tools/Dates');
 const config = require('./../../config');
 
 // Initialize models
-const User = require('./../model/User')();
-const CharityToken = require('./../model/CharityToken')();
+const User = require('./../model/User');
+const CharityToken = require('./../model/CharityToken');
 
 // Attach user endpoints to server
 module.exports = function (server) {
@@ -84,12 +84,14 @@ module.exports = function (server) {
 	// User Create: creates a new user, returns authentication and new user
 	server.post('/user.create', function (req, res, next) {
 
-		// Validate required fields
-		var err = Validation.catchErrors([
+		// Validate all fields
+		var validations = [
 			Validation.email('Email', req.body.email),
 			Validation.password('Password', req.body.password),
 			Validation.string('Name', req.body.name)
-		]);
+		];
+		if (req.body.charityToken) validations.push(Validation.string('Token', req.body.charityToken));
+		var err = Validation.catchErrors(validations);
 		if (err) return next(err);
 
 		// Hash password
@@ -122,9 +124,11 @@ module.exports = function (server) {
 					}, function (err, charityToken) {
 						if (err) {
 							callback(err);
+						} else if (!charityToken) {
+							callback(Secretary.conflictError(Messages.conflictErrors.charityTokenInvalid));
 						} else if (charityToken.used) {
 							callback(Secretary.conflictError(Messages.conflictErrors.charityTokenUsed));
-						} else if (charityToken.expiration > Dates.now()) {
+						} else if (charityToken.expiration < Dates.now()) {
 							callback(Secretary.conflictError(Messages.conflictErrors.charityTokenExpired));
 						} else {
 							callback(null, charityToken);
@@ -137,8 +141,6 @@ module.exports = function (server) {
 
 			// Create a new user, add to reply
 			function (charityToken, callback) {
-
-				console.log('aa');
 
 				// Setup user details
 				var userDetails = {
@@ -163,8 +165,8 @@ module.exports = function (server) {
 
 			// Mark charityToken as used if applicable
 			function (charityToken, user, callback) {
-				if (charityToken) CharityToken.markUsed({
-					'user': user.guid,
+				if (charityToken) charityToken.markUsed({
+					'user': user,
 				}, function (err) {
 					callback(err, user);
 				}); else {
@@ -174,8 +176,6 @@ module.exports = function (server) {
 
 			// Create an authentication token for user, add to reply
 			function (user, callback) {
-				console.log('b');
-
 				Tokens.sign({
 					'guid': user.guid
 				}, config.secret, {

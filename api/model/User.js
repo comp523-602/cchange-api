@@ -118,4 +118,4 @@ module.exports = function () {
 
 	// Return new model object
 	return user;
-}
+}();

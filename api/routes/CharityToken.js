@@ -8,12 +8,13 @@ const Validation = require('./../tools/Validation');
 const Secretary = require('./../tools/Secretary');
 const Messages = require('./../tools/Messages');
 const Dates = require('./../tools/Dates');
+const Email = require('./../tools/Email');
 
 // Initialize config
 const config = require('./../../config');
 
 // Initialize models
-const CharityToken = require('./../model/CharityToken')();
+const CharityToken = require('./../model/CharityToken');
 
 // Attach charityToken endpoints to server
 module.exports = function (server) {
@@ -29,8 +30,8 @@ module.exports = function (server) {
 		if (err) return next(err);
 
 		// Check password
-		if (req.body.adminPassword == config.adminPassword) {
-			return next(Secretary.conflictError(Messages.conflictError.adminUnauthorized));
+		if (req.body.adminPassword !== config.adminPassword) {
+			return next(Secretary.conflictError(Messages.conflictErrors.adminUnauthorized));
 		}
 
 		// Synchronously perform the following tasks...
@@ -41,7 +42,6 @@ module.exports = function (server) {
 				CharityToken.create({
 					'email': req.body.email,
 				}, function (err, charityToken) {
-					console.log(charityToken);
 					Secretary.addToResponse({
 						'response': res,
 						'key': "charityToken",
@@ -53,17 +53,17 @@ module.exports = function (server) {
 
 			// Email charity token
 			function (charityToken, callback) {
-				// Email.sendCharityToken({
-				// 	'token': charityToken.token,
-				// 	'email': req.body.email,
-				// }, function (err) {
-				// 	callback(err);
-				// });
-				callback();
+				Email.sendCharityToken({
+					'token': charityToken.token,
+					'email': req.body.email,
+				}, function (err) {
+					callback(err);
+				});
 			},
 
 		], function (err, callback) {
-			next(err);
+			if (err) next(err);
+			else Secretary.success(res);
 		})
 	})
 };
