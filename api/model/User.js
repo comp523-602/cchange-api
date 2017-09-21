@@ -3,6 +3,7 @@
 const Mongoose = require('mongoose');
 const Async = require('async');
 const Database = require('./../tools/Database');
+const Dates = require('./../tools/Dates');
 
 // User Properties: configures properties for database object
 function UserProperties (schema) {
@@ -29,6 +30,12 @@ function UserProperties (schema) {
 			'required': true
 		},
 
+		// Charity User: boolean to determine if user can administer a charity
+		'charityUser': {
+			'type': Boolean,
+			'default': false,
+		},
+
     });
 };
 
@@ -36,7 +43,7 @@ function UserProperties (schema) {
 function UserStaticMethods (schema) {
 
 	// Create: creates a new user in the database
-	schema.statics.create = function ({name, email, password}, callback) {
+	schema.statics.create = function ({name, email, password, charityUser}, callback) {
 
 		// Save reference to model
 		var User = this;
@@ -66,6 +73,8 @@ function UserStaticMethods (schema) {
 						'name': name,
 						'email': email,
 						'password': password,
+						'charityUser': charityUser,
+						'dateCreated': Dates.now(),
 					}
 				};
 

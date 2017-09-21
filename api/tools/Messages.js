@@ -21,8 +21,10 @@ module.exports = {
 		'isInvalid': " is invalid"
 	},
 	'conflictErrors': {
+		'adminUnauthorized': "You are not authorized to invite charities",
 		'emailAlreadyUsed': "An account with this email already exists",
 		'emailNotFound': "Email not recognized",
 		'passwordIncorrect': "Incorrect password",
+		'chairtyTokenExpired': "Your invitation has expired",
 	}
 };

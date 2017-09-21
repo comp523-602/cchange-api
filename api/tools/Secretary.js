@@ -21,6 +21,19 @@ function createError(code, message) {
 	};
 };
 
+function success(response) {
+
+	// Set response code
+	response.status(Messages.codes.success);
+
+	// Setup response body
+	if (!response.body) response.body = {};
+	response.body.message = Messages.responses.success;
+
+	// Send response
+	response.json(response.body);
+};
+
 module.exports = {
 	addToResponse: function ({key, value, response, databaseObject}) {
 		addToResponse({key, value, response, databaseObject});
@@ -30,5 +43,8 @@ module.exports = {
 	},
 	conflictError: function (message) {
 		return createError(Messages.codes.conflictError, message);
+	},
+	success: function (response) {
+		success(response);
 	},
 };

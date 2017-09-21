@@ -18,6 +18,7 @@ module.exports = function (server) {
 
 	// INCLUDE ROUTES
 	require('./User')(server);
+	require('./CharityToken')(server);
 
 	// Handle errors
 	server.use(function (err, req, res, next) {
@@ -45,19 +46,5 @@ module.exports = function (server) {
 		res.json({
 			'message': message
 		});
-	});
-
-	// Handle success
-	server.use(function (req, res, next) {
-
-		// Set response code
-		res.status(Messages.codes.success);
-
-		// Setup response body
-		if (!res.body) res.body = {};
-		res.body.message = Messages.responses.success;
-
-		// Send response
-		res.json(res.body);
 	});
 };
