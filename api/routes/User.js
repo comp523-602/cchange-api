@@ -60,6 +60,27 @@ module.exports = function (server) {
 				}
 			},
 
+			// Add charity to response if user has a charity
+			function (user, callback) {
+				if (user.charity) {
+					Database.findOne({
+						'model': Charity,
+						'query': {
+							'guid': user.charity,
+						}
+					}, function (err, charity) {
+						if (charity) Secretary.addToResponse({
+							'response': res,
+							'key': "charity",
+							'value': charity.format()
+						});
+						callback(err, user);
+					});
+				} else {
+					callback(null, user);
+				}
+			},
+
 			// Authenticate user, add token to request
 			function (user, callback) {
 				Authentication.makeUserToken(user, function (err, token) {
