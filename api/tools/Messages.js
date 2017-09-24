@@ -10,14 +10,18 @@ module.exports = {
 		'conflictError': 409
 	},
 	'responses': {
+		'missingToken': "Missing authorization token",
 		'unauthorized': "Unauthorized",
+		'charityUnauthorized': "Unauthorized for charity access",
 		'serverError': "A server error occured",
 		'success': "Success"
 	},
 	'typeErrors': {
 		'string': " is not a string",
+		'emptyString': " is an empty string",
 	},
 	'fieldErrors': {
+		'missing': " is missing",
 		'passwordLetter': " is missing a letter",
 		'passwordNumber': " is missing a number",
 		'isInvalid': " is invalid"

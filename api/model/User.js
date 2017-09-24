@@ -30,10 +30,10 @@ function UserProperties (schema) {
 			'required': true
 		},
 
-		// Charity User: boolean to determine if user can administer a charity
-		'charityUser': {
-			'type': Boolean,
-			'default': false,
+		// Charity: GUID of charity which user belongs to, used to distinguish user types
+		'charity': {
+			'type': String,
+			'default': null,
 		},
 
     });
@@ -43,7 +43,7 @@ function UserProperties (schema) {
 function UserStaticMethods (schema) {
 
 	// Create: creates a new user in the database
-	schema.statics.create = function ({name, email, password, charityUser}, callback) {
+	schema.statics.create = function ({name, email, password, charityGUID}, callback) {
 
 		// Save reference to model
 		var User = this;
@@ -73,7 +73,7 @@ function UserStaticMethods (schema) {
 						'name': name,
 						'email': email,
 						'password': password,
-						'charityUser': charityUser,
+						'charity': charityGUID,
 						'dateCreated': Dates.now(),
 					}
 				};

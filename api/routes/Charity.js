@@ -19,31 +19,43 @@ const Charity = require('./../model/Charity');
 // Attach charityToken endpoints to server
 module.exports = function (server) {
 
-	// Charity Create: creates a new charity with a name and description
-	server.post('/charity.create', function (req, res, next) {
+	// Charity Edit: updates a charity
+	server.post('/charity.edit', function (req, res, next) {
 
 		// Synchronously perform the following tasks...
 		Async.waterfall([
 
 			// Authenticate charity user
 			function (callback) {
-				Authentication.authenticateCharityUser(req, function (err) {
-					if (err) callback(Secretary.authorizationError());
-					else callback();
+				Authentication.authenticateCharityUser(req, function (err, decodedToken) {
+					callback(err, decodedToken);
 				});
 			},
 
 			// Validate required fields
-			function (callback) {
+			function (token, callback) {
 				callback(Validation.catchErrors([
 					Validation.string('Name', req.body.name),
 					Validation.string('Description', req.body.description),
-				]));
+				]), token);
 			},
 
-			// Create new charity
-			function (callback) {
-				Charity.create({
+			// Find charity
+			function (token, callback) {
+				Database.findOne({
+					'model': Charity,
+					'query': {
+						'guid': token.charity,
+					}
+				}, function (err, charity) {
+					if (!charity) callback(Secretary.serverError());
+					else callback(err, charity);
+				})
+			},
+
+			// Update charity, add to response
+			function (charity, callback) {
+				charity.edit({
 					'name': req.body.name,
 					'description': req.body.description,
 				}, function (err, charity) {
@@ -53,7 +65,7 @@ module.exports = function (server) {
 						'value': charity.format(),
 					});
 					callback(err);
-				})
+				});
 			},
 
 		], function (err, callback) {

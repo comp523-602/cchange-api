@@ -25,14 +25,26 @@ function CharityProperties (schema) {
 			'type': String,
 		},
 
+		// Charity Token: GUID of the token used to create charity
+		'charityToken': {
+			'type': String,
+			'required': true,
+		},
+
+		// Users: GUID of the users that can access this charity
+		'users': {
+			'type': Array,
+			'default': [],
+		},
+
     });
 };
 
 // Charity Static Methods: attaches functionality used by the schema in general
 function CharityStaticMethods (schema) {
 
-	// Create: creates a new user in the database
-	schema.statics.create = function ({name, description}, callback) {
+	// Create: creates a new charity in the database
+	schema.statics.create = function ({name, charityToken}, callback) {
 
 		// Save reference to model
 		var Charity = this;
@@ -60,7 +72,7 @@ function CharityStaticMethods (schema) {
 					'$set': {
 						'guid': GUID,
 						'name': name,
-						'description': description,
+						'charityToken': charityToken,
 					}
 				};
 
@@ -82,6 +94,63 @@ function CharityStaticMethods (schema) {
 
 // Charity Instance Methods: attaches functionality related to existing instances of the object
 function CharityInstanceMethods (schema) {
+
+	// Add User: adds to charity users array
+	schema.methods.addUser = function ({user}, callback) {
+
+		// Save reference to model
+		var Charity = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$push': {
+				'users': user.guid,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': Charity.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, charity) {
+			callback(err, charity);
+		});
+	};
+
+	// Edit: updates charity object
+	schema.methods.edit = function ({name, description}, callback) {
+
+		// Save reference to model
+		var Charity = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$set': {
+				'name': name,
+				'description': description,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': Charity.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, charity) {
+			callback(err, charity);
+		});
+	};
 
 };
 

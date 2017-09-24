@@ -17,8 +17,12 @@ function getErrorsFromArray (errors) {
 
 // Type validation functions ===================================================
 function isInvalidString (input) {
+	if (input == null)
+		return Messages.fieldErrors.missing;
 	if (!(typeof input === 'string' || input instanceof String))
 		return Messages.typeErrors.string;
+	if (input == "")
+		return Messages.typeErrors.emptyString;
 	return null;
 };
 

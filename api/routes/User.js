@@ -15,6 +15,7 @@ const config = require('./../../config');
 // Initialize models
 const User = require('./../model/User');
 const CharityToken = require('./../model/CharityToken');
+const Charity = require('./../model/Charity');
 
 // Attach user endpoints to server
 module.exports = function (server) {
@@ -86,7 +87,73 @@ module.exports = function (server) {
 			Validation.password('Password', req.body.password),
 			Validation.string('Name', req.body.name)
 		];
-		if (req.body.charityToken) validations.push(Validation.string('Token', req.body.charityToken));
+		var err = Validation.catchErrors(validations);
+		if (err) return next(err);
+
+		// Hash password
+		var password = HashPassword.generate(req.body.password);
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Check if email is unique
+			function (callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'email': req.body.email,
+					},
+				}, function (err, user) {
+					if (user) callback(Secretary.conflictError(Messages.conflictErrors.emailAlreadyUsed));
+					else callback(err);
+				});
+			},
+
+			// Create a new user, add to reply
+			function (callback) {
+				User.create({
+					'name': req.body.name,
+					'email': req.body.email,
+					'password': password,
+				}, function (err, user) {
+					if (user) Secretary.addToResponse({
+						'response': res,
+						'key': "user",
+						'value': user.format(),
+					});
+					callback(err, user);
+				});
+			},
+
+			// Create an authentication token for user, add to reply
+			function (user, callback) {
+				Authentication.makeUserToken(user, function (err, token) {
+					Secretary.addToResponse({
+						'response': res,
+						'key': "token",
+						'value': token
+					})
+					callback(err);
+				});
+			},
+
+		], function (err, callback) {
+			if (err) next(err);
+			else Secretary.success(res);
+		});
+	})
+
+	// User Create (Charity): creates a new user with a charity, returns authentication, user, charity
+	server.post('/user.create.charity', function (req, res, next) {
+
+		// Validate all fields
+		var validations = [
+			Validation.email('Email', req.body.email),
+			Validation.password('Password', req.body.password),
+			Validation.string('Name', req.body.name),
+			Validation.string('Charity token', req.body.charityToken),
+			Validation.string('Charity name', req.body.charityName),
+		];
 		var err = Validation.catchErrors(validations);
 		if (err) return next(err);
 
@@ -111,63 +178,74 @@ module.exports = function (server) {
 
 			// Validate user's charityToken if provided
 			function (callback) {
-				if (req.body.charityToken) {
-					Database.findOne({
-						'model': CharityToken,
-						'query': {
-							'token': req.body.charityToken,
-						},
-					}, function (err, charityToken) {
-						if (err) {
-							callback(err);
-						} else if (!charityToken) {
-							callback(Secretary.conflictError(Messages.conflictErrors.charityTokenInvalid));
-						} else if (charityToken.used) {
-							callback(Secretary.conflictError(Messages.conflictErrors.charityTokenUsed));
-						} else if (charityToken.expiration < Dates.now()) {
-							callback(Secretary.conflictError(Messages.conflictErrors.charityTokenExpired));
-						} else {
-							callback(null, charityToken);
-						}
-					})
-				} else {
-					callback(null, null);
-				}
+				Database.findOne({
+					'model': CharityToken,
+					'query': {
+						'token': req.body.charityToken,
+					},
+				}, function (err, charityToken) {
+					if (err) {
+						callback(err);
+					} else if (!charityToken) {
+						callback(Secretary.conflictError(Messages.conflictErrors.charityTokenInvalid));
+					} else if (charityToken.used) {
+						callback(Secretary.conflictError(Messages.conflictErrors.charityTokenUsed));
+					} else if (charityToken.expiration < Dates.now()) {
+						callback(Secretary.conflictError(Messages.conflictErrors.charityTokenExpired));
+					} else {
+						callback(null, charityToken);
+					}
+				})
 			},
 
-			// Create a new user, add to reply
+			// Create a charity
 			function (charityToken, callback) {
+				Charity.create({
+					'name': req.body.charityName,
+					'charityToken': charityToken.guid,
+				}, function (err, charity) {
+					callback(err, charityToken, charity);
+				});
+			},
 
-				// Setup user details
-				var userDetails = {
+			// Create a new user with charityGUID, add to reply
+			function (charityToken, charity, callback) {
+				User.create({
 					'name': req.body.name,
 					'email': req.body.email,
 					'password': password,
-				};
-
-				// Add charityUser boolean if applicable
-				if (charityToken) userDetails.charityUser = true;
-
-				// Create user
-				User.create(userDetails, function (err, user) {
+					'charityGUID': charity.guid,
+				}, function (err, user) {
 					if (user) Secretary.addToResponse({
 						'response': res,
 						'key': "user",
 						'value': user.format(),
 					});
+					callback(err, charityToken, charity, user);
+				});
+			},
+
+			// Add user to charity, attach charity to response
+			function (charityToken, charity, user, callback) {
+				charity.addUser({
+					'user': user,
+				}, function (err, charity) {
+					if (charity) Secretary.addToResponse({
+						'response': res,
+						'key': "charity",
+						'value': charity.format(),
+					});
 					callback(err, charityToken, user);
 				});
 			},
 
-			// Mark charityToken as used if applicable
+			// Mark charityToken as used
 			function (charityToken, user, callback) {
-				if (charityToken) charityToken.markUsed({
+				charityToken.markUsed({
 					'user': user,
 				}, function (err) {
 					callback(err, user);
-				}); else {
-					callback(null, user);
-				}
+				});
 			},
 
 			// Create an authentication token for user, add to reply
