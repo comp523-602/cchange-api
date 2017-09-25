@@ -23,6 +23,7 @@ function CharityProperties (schema) {
 		// Description: description of charity
 		'description': {
 			'type': String,
+			'default': "",
 		},
 
 		// Charity Token: GUID of the token used to create charity
