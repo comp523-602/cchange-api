@@ -7,8 +7,8 @@ const Database = require('./../tools/Database.js');
 const unformattedKeys = [
 	"_id",
 	"__v",
-	"writeAccess",
-	"password"
+	"password",
+	"charityToken"
 ];
 
 // Object Properties: configures properties for database object
@@ -20,13 +20,6 @@ function ObjectProperties (schema) {
             'type': String,
             'index': true,
             'unique': true
-        },
-
-        // Write Access: a list of users that can write to this object
-        'writeAccess': {
-            'type': [String],
-            'index': true,
-            'default': []
         },
 
 		// Date Created: this time this object was created

@@ -31,7 +31,7 @@ module.exports = function (server) {
 
 		// Check password
 		if (req.body.adminPassword !== config.adminPassword) {
-			return next(Secretary.conflictError(Messages.conflictErrors.adminUnauthorized));
+			return next(Secretary.conflictError(Messages.authErrors.adminUnauthorized));
 		}
 
 		// Synchronously perform the following tasks...
@@ -61,9 +61,9 @@ module.exports = function (server) {
 				});
 			},
 
-		], function (err, callback) {
+		], function (err) {
 			if (err) next(err);
 			else Secretary.success(res);
 		})
-	})
+	});
 };

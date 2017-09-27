@@ -1,6 +1,13 @@
 
 // Database.js: provides tools for accessing / updating the database
 
+function formatObjects(objects) {
+	if (!objects) return;
+	var formatted = [];
+	for (var i in objects) formatted.push(objects[i].format());
+	return formatted;
+}
+
 // Find One: finds a single object in the database using model
 module.exports.findOne = function ({model, query}, callback) {
     model.findOne(query, function (err, object) {
@@ -8,7 +15,14 @@ module.exports.findOne = function ({model, query}, callback) {
     });
 };
 
-// Update: queries and updates an object in the database
+// Page: finds a limited, sorted list of objects in the database using model
+module.exports.page = function ({model, query, pageSize, sort}, callback) {
+	model.find(query).sort(sort).limit(pageSize).exec(function (err, objects) {
+		callback(err, formatObjects(objects));
+	});
+};
+
+// Update: queries and updates an object in the database using model
 module.exports.update = function ({model, query, update}, callback) {
 
 	// Setup options

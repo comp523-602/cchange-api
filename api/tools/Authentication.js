@@ -6,6 +6,7 @@ const Token = require('jsonwebtoken');
 const Dates = require('./Dates');
 const Secretary = require('./Secretary');
 const Messages = require('./Messages');
+const Types = require('./Types');
 
 // Initialize config
 const config = require('./../../config');
@@ -41,7 +42,7 @@ function authenticateUser (request, requireCharityUser, callback) {
 
 	// Error: Missing token
 	if (!token) {
-		return callback(Secretary.authorizationError(Messages.responses.missingToken));
+		return callback(Secretary.authorizationError(Messages.authErrors.missingToken));
 	}
 
 	// Verifiy token & determine charity user
@@ -52,18 +53,51 @@ function authenticateUser (request, requireCharityUser, callback) {
 
 			// Error: Missing charity permissions
 			if (requireCharityUser && !decodedToken.charity)
-				return callback(Secretary.authorizationError(Messages.responses.charityUnauthorized));
+				return callback(Secretary.authorizationError(Messages.authErrors.charityUnauthorized));
 
 			// Success: Handle proper token
 			return callback(null, decodedToken);
 		}
 
 		// Error: unsuccessful token
-		else callback(Secretary.authorizationError(Messages.responses.unauthorized));
+		else callback(Secretary.authorizationError(Messages.authErrors.unauthorized));
 	});
 };
 
+function getAuthenticationType (request, callback) {
+
+	// Get token from request
+	var token = getTokenFromRequest(request);
+
+	// Handle missing token (public authorization)
+	if (!token) return callback(null, Types.auth.public);
+
+	// Handle provided token
+	Token.verify(token, config.secret, function (err, decodedToken) {
+
+		// Handle error
+		if (err) callback(err);
+
+		// Handle successful token
+		if (decodedToken) {
+
+			// Handle charity token (charity authorization)
+			if (decodedToken.charity) return callback(null, Types.auth.charity);
+
+			// Handle user token (user authorization)
+			return callback(null, Types.auth.user);
+		}
+
+		// Handle unsuccessful token (public authorization)
+		else return callback(null, Types.auth.public);
+	});
+
+};
+
 module.exports = {
+	getAuthenticationType: function (request, callback) {
+		getAuthenticationType(request, callback);
+	},
 	authenticateCharityUser: function (request, callback) {
 		authenticateUser(request, true, callback);
 	},

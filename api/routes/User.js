@@ -93,7 +93,7 @@ module.exports = function (server) {
 				});
 			},
 
-		], function (err, callback) {
+		], function (err) {
 			if (err) next(err);
 			else Secretary.success(res);
 		})
@@ -158,7 +158,7 @@ module.exports = function (server) {
 				});
 			},
 
-		], function (err, callback) {
+		], function (err) {
 			if (err) next(err);
 			else Secretary.success(res);
 		});
@@ -281,7 +281,7 @@ module.exports = function (server) {
 				});
 			},
 
-		], function (err, callback) {
+		], function (err) {
 			if (err) next(err);
 			else Secretary.success(res);
 		});

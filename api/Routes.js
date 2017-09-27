@@ -1,27 +1,29 @@
 
-// Routing.js: attaches middleware and all routing files to server
+// Routes.js: attaches middleware and all routing files to server
 
 // Initialize dependencies
-const Messages = require('./../tools/Messages');
+const Messages = require('./tools/Messages');
 
 // Export functionality
 module.exports = function (server) {
 
-	// SET HEADERS: Allow CORS requests from all origins
+	// Middleware: Set headers
 	server.use(function (req, res, next) {
 	    res.setHeader('Access-Control-Allow-Origin', '*');
-	    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+	    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST');
+	    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-type,Authorization');
 	    res.setHeader('Access-Control-Allow-Credentials', true);
 	    next();
 	});
 
-	// INCLUDE ROUTES
-	require('./User')(server);
-	require('./Charity')(server);
-	require('./CharityToken')(server);
+	// Handle routes
+	require('./routes/User')(server);
+	require('./routes/Charity')(server);
+	require('./routes/CharityToken')(server);
+	require('./routes/Campaign')(server);
+	require('./routes/Update')(server);
 
-	// Handle errors
+	// Middleware: Handle errors
 	server.use(function (err, req, res, next) {
 
 		// Initialize response variables
@@ -37,7 +39,7 @@ module.exports = function (server) {
 		else {
 			console.log(err); // Print error in log
 			code = Messages.codes.serverError;
-			message = Messages.responses.serverError;
+			message = Messages.serverError;
 		}
 
 		// Set response code

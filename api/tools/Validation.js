@@ -15,6 +15,12 @@ function getErrorsFromArray (errors) {
 	return null;
 }
 
+function getNamedErrorFromArray (errors, name) {
+	var error = getErrorsFromArray(errors);
+	if (error) return name + error;
+	return null;
+};
+
 // Type validation functions ===================================================
 function isInvalidString (input) {
 	if (input == null)
@@ -26,12 +32,29 @@ function isInvalidString (input) {
 	return null;
 };
 
+function isInvalidNumber (input) {
+	if (input == null)
+		return Messages.fieldErrors.missing;
+	if (!(typeof input === 'number'))
+		return Messages.typeErrors.number;
+	return null;
+};
+
 // String validation functions =================================================
-function isProperLength (input, minlength, maxlength) {
+function isInvalidLength (input, minlength, maxlength) {
 	if (minlength && input.length < minlength)
 		return " must be " +  minlength + " characters";
 	if (maxlength && input.length > maxlength)
 		return " must be less than " + maxlength + " characters";
+	return null;
+}
+
+// Number validation functions =================================================
+function isInvalidSize (input, min, max) {
+	if (min && input < min)
+		return " must be greater than " + min;
+	if (max && input > max)
+		return " must be less than " + max;
 	return null;
 }
 
@@ -50,6 +73,14 @@ function isInvalidPassword (input) {
 	return null;
 };
 
+function isInvalidSort (input) {
+	if (
+		input == "asc" ||
+		input == "desc"
+	) return null;
+	return Messages.fieldErrors.sortKey;
+};
+
 // Exports =====================================================================
 
 // Catch Errors: returns possible errors from an error of validation functions
@@ -60,26 +91,36 @@ module.exports.catchErrors = function (errors, callback) {
 };
 
 module.exports.email = function (name, input) {
-	var error = getErrorsFromArray([
+	return getNamedErrorFromArray([
 		isInvalidString(input),
 		isInvalidEmail(input)
-	]);
-	if (error) return name + error;
-	return null;
+	], name);
 };
 
 module.exports.password = function (name, input) {
-	var error = getErrorsFromArray([
+	return getNamedErrorFromArray([
 		isInvalidString(input),
-		isProperLength(input, 8),
+		isInvalidLength(input, 8),
 		isInvalidPassword(input)
-	]);
-	if (error) return name + error;
-	return null;
+	], name);
 };
 
 module.exports.string = function (name, input) {
-	var error = isInvalidString(input);
-	if (error) return name + error;
-	return null;
+	return getNamedErrorFromArray([
+		isInvalidString(input),
+	], name);
+};
+
+module.exports.pageSize = function (name, input) {
+	return getNamedErrorFromArray([
+		isInvalidNumber(input),
+		isInvalidSize(input, 1, 20),
+	], name);
+};
+
+module.exports.sort = function (name, input) {
+	return getNamedErrorFromArray([
+		isInvalidString(input),
+		isInvalidSort(input),
+	], name);
 };

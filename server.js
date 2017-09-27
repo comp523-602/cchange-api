@@ -44,8 +44,8 @@ function startServer (callback) {
 	// Start listening to port
 	server.listen(config.port, config.ip, function () {
 
-		// Setup routing & middleware
-		require('./api/routes/Routing')(server);
+		// Setup routes & middleware
+		require('./api/Routes')(server);
 
 		// Callback upon success
 		console.log('Server listening on '+config.ip+':'+config.port+'...');

@@ -9,6 +9,12 @@ const Dates = require('./../tools/Dates');
 // Initialize config
 const config = require('./../../config');
 
+// Authenticated Token: authenicates user to edit charity
+function authenticatedToken (charity, token) {
+	if (token.charity == charity.guid) return true;
+	return false;
+};
+
 // Charity Properties: configures properties for database object
 function CharityProperties (schema) {
     schema.add({
@@ -34,6 +40,18 @@ function CharityProperties (schema) {
 
 		// Users: GUID of the users that can access this charity
 		'users': {
+			'type': Array,
+			'default': [],
+		},
+
+		// Campaigns: GUID of the campaigns that belong to this charity
+		'campaigns': {
+			'type': Array,
+			'default': [],
+		},
+
+		// Updates: GUID of the updates that belong to this charity
+		'updates': {
 			'type': Array,
 			'default': [],
 		},
@@ -97,7 +115,9 @@ function CharityStaticMethods (schema) {
 function CharityInstanceMethods (schema) {
 
 	// Add User: adds to charity users array
-	schema.methods.addUser = function ({user}, callback) {
+	schema.methods.addUser = function ({user, token}, callback) {
+
+		// Note: doesn't require authorization (addUser called after create)
 
 		// Save reference to model
 		var Charity = this;
@@ -124,8 +144,76 @@ function CharityInstanceMethods (schema) {
 		});
 	};
 
+	// Add Campaign: adds to charity campaigns array
+	schema.methods.addCampaign = function ({campaign, token}, callback) {
+
+		// Authenicate user
+		if (!authenticatedToken(this, token))
+			return callback(Secretary.authenticationError(Messages.authErrors.noAccess));
+
+		// Save reference to model
+		var Charity = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$push': {
+				'campaigns': campaign.guid,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': Charity.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, charity) {
+			callback(err, charity);
+		});
+	};
+
+	// Add Update: adds to charity updates array
+	schema.methods.addUpdate = function ({update, token}, callback) {
+
+		// Authenicate user
+		if (!authenticatedToken(this, token))
+			return callback(Secretary.authenticationError(Messages.authErrors.noAccess));
+
+		// Save reference to model
+		var Charity = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var dbupdate = {
+			'$push': {
+				'updates': update.guid,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': Charity.constructor,
+			'query': query,
+			'update': dbupdate,
+		}, function (err, charity) {
+			callback(err, charity);
+		});
+	};
+
 	// Edit: updates charity object
-	schema.methods.edit = function ({name, description}, callback) {
+	schema.methods.edit = function ({name, description, token}, callback) {
+
+		// Authenicate user
+		if (!authenticatedToken(this, token))
+			return callback(Secretary.authenticationError(Messages.authErrors.noAccess));
 
 		// Save reference to model
 		var Charity = this;

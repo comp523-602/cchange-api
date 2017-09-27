@@ -28,7 +28,7 @@ function success(response) {
 
 	// Setup response body
 	if (!response.body) response.body = {};
-	response.body.message = Messages.responses.success;
+	response.body.message = Messages.success;
 
 	// Send response
 	response.json(response.body);
@@ -48,7 +48,7 @@ module.exports = {
 		return createError(Messages.codes.unauthorizedError, message);
 	},
 	serverError: function (message) {
-		return createError(Messages.codes.serverError, Messages.responses.serverError);
+		return createError(Messages.codes.serverError, Messages.serverError);
 	},
 	success: function (response) {
 		success(response);

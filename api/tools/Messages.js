@@ -9,25 +9,27 @@ module.exports = {
 		'unauthorizedError': 401,
 		'conflictError': 409
 	},
-	'responses': {
+	'authErrors': {
 		'missingToken': "Missing authorization token",
 		'unauthorized': "Unauthorized",
 		'charityUnauthorized': "Unauthorized for charity access",
-		'serverError': "A server error occured",
-		'success': "Success"
+		'noAccess': "Unauthorized to access object",
+		'adminUnauthorized': "You are not authorized to invite charities",
 	},
 	'typeErrors': {
 		'string': " is not a string",
 		'emptyString': " is an empty string",
+		'number': " is not a number",
 	},
 	'fieldErrors': {
 		'missing': " is missing",
 		'passwordLetter': " is missing a letter",
 		'passwordNumber': " is missing a number",
-		'isInvalid': " is invalid"
+		'isInvalid': " is invalid",
+		'sortKey': " is not a valid sort key",
 	},
 	'conflictErrors': {
-		'adminUnauthorized': "You are not authorized to invite charities",
+		'objectNotFound': "Object not found in the database",
 		'emailAlreadyUsed': "An account with this email already exists",
 		'emailNotFound': "Email not recognized",
 		'passwordIncorrect': "Incorrect password",
@@ -35,4 +37,6 @@ module.exports = {
 		'charityTokenUsed': "Your invitiation has already been used",
 		'charityTokenExpired': "Your invitation has expired",
 	},
+	'serverError': "A server error occured",
+	'success': "Success!"
 };
