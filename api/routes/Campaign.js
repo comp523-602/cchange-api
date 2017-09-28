@@ -19,7 +19,18 @@ const Campaign = require('./../model/Campaign');
 // Attach campaign endpoints to server
 module.exports = function (server) {
 
-	// Campaign: queries and returns a single campaign
+	/**
+	 * @api {POST} /campaign Campaign
+	 * @apiName Campaign
+	 * @apiGroup Campaign
+	 * @apiDescription Queries and returns a single campaign
+	 *
+	 * @apiParam {String} campaign GUID of Campaign object
+	 *
+	 * @apiSuccess {Object} campaign Campaign object
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/campaign', function (req, res, next) {
 
 		// Synchronously perform the following tasks...
@@ -56,7 +67,17 @@ module.exports = function (server) {
 		})
 	})
 
-	// Campaigns: queries and returns a list of campaigns
+	/**
+	 * @api {POST} /campaigns Campaigns
+	 * @apiName Campaigns
+	 * @apiGroup Campaign
+	 * @apiDescription Queries and returns a list of campaigns
+	 * @apiUse Paging
+	 *
+	 * @apiSuccess {Array} updates Array of Campaign objects
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/campaigns', function (req, res, next) {
 
 		// Synchronously perform the following tasks...
@@ -94,7 +115,20 @@ module.exports = function (server) {
 		})
 	})
 
-	// Campaign Create: creates a campaign
+	/**
+	 * @api {POST} /campaign.create Create
+	 * @apiName Create
+	 * @apiGroup Campaign
+	 * @apiDescription Creates a new campaign for a charity user
+	 * @apiUse Authorization
+	 *
+	 * @apiParam {String} name Name of campaign
+	 * @apiParam {String} description Description of campaign
+	 *
+	 * @apiSuccess {Object} campaign Campaign object
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/campaign.create', function (req, res, next) {
 
 		// Synchronously perform the following tasks...
@@ -160,7 +194,21 @@ module.exports = function (server) {
 		})
 	})
 
-	// Campaign Edit: edits a campaign
+	/**
+	 * @api {POST} /campaign.edit Edit
+	 * @apiName Edit
+	 * @apiGroup Campaign
+	 * @apiDescription Edits a campaign for a charity user
+	 * @apiUse Authorization
+	 *
+	 * @apiParam {String} campaign GUID of campaign to edit
+	 * @apiParam {String} name Name of campaign
+	 * @apiParam {String} description Description of campaign
+	 *
+	 * @apiSuccess {Object} campaign Campaign object
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/campaign.edit', function (req, res, next) {
 
 		// Synchronously perform the following tasks...

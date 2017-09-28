@@ -21,6 +21,8 @@
     "async": "^2.5.0",
     "body-parser": "^1.18.1",
     "express": "^4.15.4",
+    "gulp": "^3.9.1",
+    "gulp-apidoc": "^0.2.6",
     "jsonwebtoken": "^8.0.1",
     "moment": "^2.18.1",
     "mongoose": "^4.11.11",

@@ -20,13 +20,27 @@ const Charity = require('./../model/Charity');
 // Attach user endpoints to server
 module.exports = function (server) {
 
-	// User Login: queries for an exisiting user, returns authentication and user
+	/**
+	 * @api {POST} /user.login Login
+	 * @apiName Login
+	 * @apiGroup User
+	 * @apiDescription Authenticates a user with an email and password
+	 *
+	 * @apiParam {String} email User's email address
+	 * @apiParam {String} password User's password
+	 *
+	 * @apiSuccess {Object} user User object
+	 * @apiSuccess {String} token Authentication token
+	 * @apiSuccess {Object} charity Charity object (if user is a charity administrator)
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/user.login', function (req, res, next) {
 
 		// Validate required fields
 		var err = Validation.catchErrors([
 			Validation.email('Email', req.body.email),
-			Validation.password('Password', req.body.password),
+			Validation.string('Password', req.body.password),
 		]);
 		if (err) return next(err);
 
@@ -99,7 +113,21 @@ module.exports = function (server) {
 		})
 	})
 
-	// User Create: creates a new user, returns authentication and new user
+	/**
+	 * @api {POST} /user.create Create
+	 * @apiName Create
+	 * @apiGroup User
+	 * @apiDescription Creates a new user, returns authentication and new user
+	 *
+	 * @apiParam {String} name User's name
+	 * @apiParam {String} email User's email address
+	 * @apiParam {String} password User's password (min. 8 characters, numbers and letter required)
+	 *
+	 * @apiSuccess {Object} user User object
+	 * @apiSuccess {String} token Authentication token
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/user.create', function (req, res, next) {
 
 		// Validate all fields
@@ -164,7 +192,22 @@ module.exports = function (server) {
 		});
 	})
 
-	// User Create (Charity): creates a new user with a charity, returns authentication, user, charity
+	/**
+	 * @api {POST} /user.create.chairty Create (Charity)
+	 * @apiName Create (Charity)
+	 * @apiGroup User
+	 * @apiDescription Creates a new user with a charity, returns authentication, user, charity
+	 *
+	 * @apiParam {String} name User's name
+	 * @apiParam {String} email User's email address
+	 * @apiParam {String} token Charity token (provided in email to user)
+	 *
+	 * @apiSuccess {Object} user User object
+	 * @apiSuccess {String} token Authentication token
+	 * @apiSuccess {Object} charity Charity object
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/user.create.charity', function (req, res, next) {
 
 		// Validate all fields

@@ -19,7 +19,18 @@ const Update = require('./../model/Update');
 // Attach campaign endpoints to server
 module.exports = function (server) {
 
-	// Update: queries and returns a single update
+	/**
+	 * @api {POST} /update Update
+	 * @apiName Update
+	 * @apiGroup Update
+	 * @apiDescription Queries and returns a single update
+	 *
+	 * @apiParam {String} update GUID of Update object
+	 *
+	 * @apiSuccess {Object} update Update object
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/update', function (req, res, next) {
 
 		// Synchronously perform the following tasks...
@@ -57,7 +68,17 @@ module.exports = function (server) {
 		})
 	})
 
-	// Updates: queries and returns a list of updates
+	/**
+	 * @api {POST} /updates Updates
+	 * @apiName Updates
+	 * @apiGroup Update
+	 * @apiDescription Queries and returns a list of updates
+	 * @apiUse Paging
+	 *
+	 * @apiSuccess {Array} updates Array of Update objects
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/updates', function (req, res, next) {
 
 		// Synchronously perform the following tasks...
@@ -95,7 +116,20 @@ module.exports = function (server) {
 		})
 	})
 
-	// Update Create: creates an update
+	/**
+	 * @api {POST} /update.create Create
+	 * @apiName Create
+	 * @apiGroup Update
+	 * @apiDescription Creates a new update for a charity user
+	 * @apiUse Authorization
+	 *
+	 * @apiParam {String} name Name of update
+	 * @apiParam {String} description Description of update
+	 *
+	 * @apiSuccess {Object} update Update object
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/update.create', function (req, res, next) {
 
 		// Synchronously perform the following tasks...
@@ -161,7 +195,21 @@ module.exports = function (server) {
 		})
 	})
 
-	// Update Edit: edits a update
+	/**
+	 * @api {POST} /update.edit Edit
+	 * @apiName Edit
+	 * @apiGroup Update
+	 * @apiDescription Edits an update for a charity user
+	 * @apiUse Authorization
+	 *
+	 * @apiParam {String} update GUID of update to edit
+	 * @apiParam {String} name Name of update
+	 * @apiParam {String} description Description of update
+	 *
+	 * @apiSuccess {Object} update Update object
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/update.edit', function (req, res, next) {
 
 		// Synchronously perform the following tasks...

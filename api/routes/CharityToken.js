@@ -19,7 +19,17 @@ const CharityToken = require('./../model/CharityToken');
 // Attach charityToken endpoints to server
 module.exports = function (server) {
 
-	// Charity Token Create: creates a new charity token with an email (requires adminPassword)
+	/**
+	 * @api {POST} /charityToken.create Create
+	 * @apiName Create
+	 * @apiGroup CharityToken
+	 * @apiDescription Creates and emails a charity token for cChange administrators
+	 *
+	 * @apiParam {String} adminPassword Administration password
+	 * @apiParam {String} email Email of user to send charity token to
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/charityToken.create', function (req, res, next) {
 
 		// Validate required fields

@@ -10,7 +10,7 @@ module.exports = function (server) {
 	// Middleware: Set headers
 	server.use(function (req, res, next) {
 	    res.setHeader('Access-Control-Allow-Origin', '*');
-	    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST');
+	    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST, GET');
 	    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-type,Authorization');
 	    res.setHeader('Access-Control-Allow-Credentials', true);
 	    next();

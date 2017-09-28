@@ -18,7 +18,18 @@ const Charity = require('./../model/Charity');
 // Attach charityToken endpoints to server
 module.exports = function (server) {
 
-	// Charity: queries and returns a single charity
+	/**
+	 * @api {POST} /charity Charity
+	 * @apiName Charity
+	 * @apiGroup Charity
+	 * @apiDescription Queries and returns a single charity object
+	 *
+	 * @apiParam {String} charity GUID of charity to return
+	 *
+	 * @apiSuccess {Object} charity Charity object
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/charity', function (req, res, next) {
 
 		// Synchronously perform the following tasks...
@@ -27,7 +38,7 @@ module.exports = function (server) {
 			// Validate required fields
 			function (callback) {
 				callback(Validation.catchErrors([
-					Validation.string('Charity ID (charity)', req.body.charity),
+					Validation.string('Charity', req.body.charity),
 				]));
 			},
 
@@ -55,7 +66,17 @@ module.exports = function (server) {
 		})
 	})
 
-	// Charities: queries and returns a list of charities
+	/**
+	 * @api {POST} /charities Charities
+	 * @apiName Charities
+	 * @apiGroup Charity
+	 * @apiDescription Queries and returns a list of charities
+	 * @apiUse Paging
+	 *
+	 * @apiSuccess {Array} charities Array of Charity objects
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/charities', function (req, res, next) {
 
 		// Synchronously perform the following tasks...
@@ -93,7 +114,20 @@ module.exports = function (server) {
 		})
 	})
 
-	// Charity Edit: updates a charity
+	/**
+	 * @api {POST} /charity.edit Edit
+	 * @apiName Edit
+	 * @apiGroup Charity
+	 * @apiDescription Edits a charity for a charity user
+	 * @apiUse Authorization
+	 *
+	 * @apiParam {String} name Name of charity
+	 * @apiParam {String} description Description of charity
+	 *
+	 * @apiSuccess {Object} update Charity object
+	 *
+	 * @apiUse Error
+	 */
 	server.post('/charity.edit', function (req, res, next) {
 
 		// Synchronously perform the following tasks...
