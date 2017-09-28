@@ -32,6 +32,12 @@ function CharityProperties (schema) {
 			'default': "",
 		},
 
+		// Logo: URL of charity logo
+		'logo': {
+			'type': String,
+			'default': "",
+		},
+
 		// Charity Token: GUID of the token used to create charity
 		'charityToken': {
 			'type': String,
@@ -209,7 +215,7 @@ function CharityInstanceMethods (schema) {
 	};
 
 	// Edit: updates charity object
-	schema.methods.edit = function ({name, description, token}, callback) {
+	schema.methods.edit = function ({token, name, description, logo}, callback) {
 
 		// Authenicate user
 		if (!authenticatedToken(this, token))
@@ -224,11 +230,12 @@ function CharityInstanceMethods (schema) {
 		};
 
 		// Setup database update
+		var set = {};
+		if (name) set.name = name;
+		if (description) set.description = description;
+		if (logo) set.logo = logo;
 		var update = {
-			'$set': {
-				'name': name,
-				'description': description,
-			}
+			'$set': set
 		};
 
 		// Make database update

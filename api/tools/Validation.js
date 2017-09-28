@@ -81,6 +81,12 @@ function isInvalidSort (input) {
 	return Messages.fieldErrors.sortKey;
 };
 
+function isInvalidImageURL (input) {
+	var urlRegExp = new RegExp(/^https?:\/\/(?:[a-z\-]+\.)+[a-z]{2,6}(?:\/[^\/#?]+)+\.(?:jpe?g|gif|png)$/);
+	if (!urlRegExp.test(input)) return Messages.fieldErrors.invalidImageURL;
+	return null;
+};
+
 // Exports =====================================================================
 
 // Catch Errors: returns possible errors from an error of validation functions
@@ -122,5 +128,12 @@ module.exports.sort = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidString(input),
 		isInvalidSort(input),
+	], name);
+};
+
+module.exports.imageUrl = function (name, input) {
+	return getNamedErrorFromArray([
+		isInvalidString(input),
+		isInvalidImageURL(input),
 	], name);
 };
