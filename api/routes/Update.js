@@ -20,6 +20,7 @@ const Update = require('./../model/Update');
 module.exports = function (server) {
 
 	/**
+	 * @private
 	 * @api {POST} /update Update
 	 * @apiName Update
 	 * @apiGroup Update
@@ -69,6 +70,7 @@ module.exports = function (server) {
 	})
 
 	/**
+	 * @private
 	 * @api {POST} /updates Updates
 	 * @apiName Updates
 	 * @apiGroup Update
@@ -117,6 +119,7 @@ module.exports = function (server) {
 	})
 
 	/**
+	 * @private
 	 * @api {POST} /update.create Create
 	 * @apiName Create
 	 * @apiGroup Update
@@ -196,6 +199,7 @@ module.exports = function (server) {
 	})
 
 	/**
+	 * @private
 	 * @api {POST} /update.edit Edit
 	 * @apiName Edit
 	 * @apiGroup Update

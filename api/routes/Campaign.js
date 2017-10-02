@@ -20,6 +20,7 @@ const Campaign = require('./../model/Campaign');
 module.exports = function (server) {
 
 	/**
+	 * @private
 	 * @api {POST} /campaign Campaign
 	 * @apiName Campaign
 	 * @apiGroup Campaign
@@ -68,6 +69,7 @@ module.exports = function (server) {
 	})
 
 	/**
+	 * @private
 	 * @api {POST} /campaigns Campaigns
 	 * @apiName Campaigns
 	 * @apiGroup Campaign
@@ -116,6 +118,7 @@ module.exports = function (server) {
 	})
 
 	/**
+	 * @private
 	 * @api {POST} /campaign.create Create
 	 * @apiName Create
 	 * @apiGroup Campaign
@@ -195,6 +198,7 @@ module.exports = function (server) {
 	})
 
 	/**
+	 * @private
 	 * @api {POST} /campaign.edit Edit
 	 * @apiName Edit
 	 * @apiGroup Campaign
