@@ -21,7 +21,6 @@ const Charity = require('./../model/Charity');
 module.exports = function (server) {
 
 	/**
-	 * @private
 	 * @api {POST} /user.login Login
 	 * @apiName Login
 	 * @apiGroup User
@@ -115,7 +114,6 @@ module.exports = function (server) {
 	})
 
 	/**
-	 * @private
 	 * @api {POST} /user.create Create
 	 * @apiName Create
 	 * @apiGroup User
@@ -195,7 +193,6 @@ module.exports = function (server) {
 	})
 
 	/**
-	 * @private
 	 * @api {POST} /user.create.chairty Create (Charity)
 	 * @apiName Create (Charity)
 	 * @apiGroup User

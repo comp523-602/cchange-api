@@ -20,7 +20,6 @@ const CharityToken = require('./../model/CharityToken');
 module.exports = function (server) {
 
 	/**
-	 * @private
 	 * @api {POST} /charityToken.create Create
 	 * @apiName Create
 	 * @apiGroup CharityToken
