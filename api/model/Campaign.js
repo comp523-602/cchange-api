@@ -45,7 +45,7 @@ function CampaignProperties (schema) {
 function CampaignStaticMethods (schema) {
 
 	// Create: creates a new campaign in the database
-	schema.statics.create = function ({name, charity}, callback) {
+	schema.statics.create = function ({name, description, charity}, callback) {
 
 		// Save reference to model
 		var Campaign = this;
@@ -73,6 +73,7 @@ function CampaignStaticMethods (schema) {
 					'$set': {
 						'guid': GUID,
 						'name': name,
+						'description': description,
 						'charity': charity.guid
 					}
 				};
