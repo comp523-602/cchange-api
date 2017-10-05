@@ -23,7 +23,7 @@ function getNamedErrorFromArray (errors, name) {
 
 // Type validation functions ===================================================
 function isInvalidString (input) {
-	if (input == null)
+	if (input === null || input === undefined)
 		return Messages.fieldErrors.missing;
 	if (!(typeof input === 'string' || input instanceof String))
 		return Messages.typeErrors.string;
