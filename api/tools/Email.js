@@ -15,10 +15,15 @@ SendGrid.setApiKey(config.sendgrid);
 module.exports = {
 	sendCharityToken: function ({token, email}, callback) {
 
+		// Initialize route
+		const route = "http://app.cchange.ga/charityToken/";
+
 		// Setup email
-		body = "You've been invited to create a cChange charity account. Use this token to get started: ";
-		body += token;
-		body += " This token will expire in 7 days";
+		var body = "You've been invited to create a cChange charity account. Click the link to get started: ";
+		body += "<br /><br />";
+		body += "<a href='" + route + token +"'>" + route + token + "</a>";
+		body += "<br /><br />";
+		body += "This link will expire in 7 days";
 
 		// Send email
 		SendGrid.send({
@@ -26,7 +31,6 @@ module.exports = {
 		    'to': email,
 		    'subject': "Make your cChange Charity Account",
 		    'html': body,
-			'text': body,
 		}, function(err) {
 			callback(err);
 		});
