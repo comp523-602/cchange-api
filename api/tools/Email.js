@@ -16,12 +16,12 @@ module.exports = {
 	sendCharityToken: function ({token, email}, callback) {
 
 		// Initialize route
-		const route = "http://app.cchange.ga/charityToken/";
+		const route = "charitySignup/";
 
 		// Setup email
 		var body = "You've been invited to create a cChange charity account. Click the link to get started: ";
 		body += "<br /><br />";
-		body += "<a href='" + route + token +"'>" + route + token + "</a>";
+		body += "<a href='" + config.appURL + route + token +"'>Create a new cChage charity</a>";
 		body += "<br /><br />";
 		body += "This link will expire in 7 days";
 
