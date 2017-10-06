@@ -200,7 +200,9 @@ module.exports = function (server) {
 	 *
 	 * @apiParam {String} name User's name
 	 * @apiParam {String} email User's email address
-	 * @apiParam {String} token Charity token (provided in email to user)
+	 * @apiParam {String} password User's password
+	 * @apiParam {String} charityName Name of charity
+	 * @apiParam {String} charityToken Charity token (provided in email to user)
 	 *
 	 * @apiSuccess {Object} user User object
 	 * @apiSuccess {String} token Authentication token
