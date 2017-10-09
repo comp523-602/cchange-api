@@ -1,4 +1,4 @@
-
+/** @namespace tools/Validation */
 // Validation.js: provides tools for validating incoming parameters
 
 // Initialize dependencies

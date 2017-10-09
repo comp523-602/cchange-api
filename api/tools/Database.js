@@ -1,4 +1,4 @@
-
+/** @namespace tools/Database */
 // Database.js: provides tools for accessing / updating the database
 
 function formatObjects(objects) {

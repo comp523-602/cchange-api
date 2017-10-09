@@ -1,3 +1,4 @@
+/** @namespace model/Update */
 
 // Initialize dependencies
 const Mongoose = require('mongoose');
@@ -44,7 +45,10 @@ function UpdateProperties (schema) {
 // Update Static Methods: attaches functionality used by the schema in general
 function UpdateStaticMethods (schema) {
 
-	// Create: creates a new update in the database
+	/**
+	 * Creates a new update in the database
+	 * @memberof model/Update
+	 */
 	schema.statics.create = function ({name, charity}, callback) {
 
 		// Save reference to model
@@ -96,7 +100,10 @@ function UpdateStaticMethods (schema) {
 // Update Instance Methods: attaches functionality related to existing instances of the object
 function UpdateInstanceMethods (schema) {
 
-	// Edit: updates update object
+	/**
+	 * Updates an existing update in the database
+	 * @memberof model/Update
+	 */
 	schema.methods.edit = function ({name, description, token}, callback) {
 
 		// Authenicate user

@@ -1,3 +1,7 @@
+/**
+ * @namespace apiDocs
+ * @private
+ */
 
 // Initialize dependencies
 const Async = require('async');
@@ -20,10 +24,11 @@ const Campaign = require('./../model/Campaign');
 module.exports = function (server) {
 
 	/**
+	 * @memberof apiDocs
 	 * @api {POST} /campaign Campaign
 	 * @apiName Campaign
 	 * @apiGroup Campaign
-	 * @apiDescription Queries and returns a single campaign
+	 * @apiDescription Queries and returns a single campaign!
 	 *
 	 * @apiParam {String} campaign GUID of Campaign object
 	 *
@@ -68,6 +73,7 @@ module.exports = function (server) {
 	})
 
 	/**
+	 * @memberof apiDocs
 	 * @api {POST} /campaigns Campaigns
 	 * @apiName Campaigns
 	 * @apiGroup Campaign
@@ -116,6 +122,7 @@ module.exports = function (server) {
 	})
 
 	/**
+	 * @memberof apiDocs
 	 * @api {POST} /campaign.create Create
 	 * @apiName Create
 	 * @apiGroup Campaign
@@ -195,6 +202,7 @@ module.exports = function (server) {
 	})
 
 	/**
+	 * @memberof apiDocs
 	 * @api {POST} /campaign.edit Edit
 	 * @apiName Edit
 	 * @apiGroup Campaign

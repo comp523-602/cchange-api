@@ -1,3 +1,4 @@
+/** @namespace model/Charity */
 
 // Initialize dependencies
 const Mongoose = require('mongoose');

@@ -1,3 +1,4 @@
+/** @namespace model/User */
 
 // Initialize dependencies
 const Mongoose = require('mongoose');
@@ -42,7 +43,10 @@ function UserProperties (schema) {
 // User Static Methods: attaches functionality used by the schema in general
 function UserStaticMethods (schema) {
 
-	// Create: creates a new user in the database
+	/**
+	 * Creates a new user in the database
+	 * @memberof model/User
+	 */
 	schema.statics.create = function ({name, email, password, charityGUID}, callback) {
 
 		// Save reference to model

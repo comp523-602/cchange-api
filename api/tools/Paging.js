@@ -1,4 +1,4 @@
-
+/** @namespace tools/Paging */
 // Paging.js: reusable database paging function
 
 // Initialize dependencies

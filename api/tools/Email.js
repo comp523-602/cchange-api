@@ -1,4 +1,4 @@
-
+/** @namespace tools/Email */
 // Email.js: sends emails using sendmail
 
 // Initialize dependencies

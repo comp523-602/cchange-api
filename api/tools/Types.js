@@ -1,4 +1,4 @@
-
+/** @namespace tools/Types */
 // Types.js: holds types
 
 module.exports = {

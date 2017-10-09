@@ -1,3 +1,4 @@
+/** @namespace model/Campaign */
 
 // Initialize dependencies
 const Mongoose = require('mongoose');

@@ -1,4 +1,4 @@
-
+/** @namespace tools/Dates */
 // Dates.js: provides tools for generating / handling dates
 
 // Initialize dependencies

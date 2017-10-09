@@ -1,8 +1,5 @@
-
+/** @namespace tools/Authentication */
 // Authentication.js: authenticates user
-/**
- * @module Authenication
- */
 
 // Initialize dependencies
 const Token = require('jsonwebtoken');
@@ -18,7 +15,7 @@ const config = require('./../../config');
 
 /**
  * Returns the token from a request object
- * @exports Authentication
+ * @memberof tools/Authentication
  * @param {object} request Express.js request object
  * @return {string} Encoded token
  */
@@ -29,6 +26,7 @@ function getTokenFromRequest (request) {
 
 /**
  * Creates a token using a user object
+ * @memberof tools/Authentication
  * @param {object} user User model object
  * @param {function} callback Callback function
  * @example
@@ -55,6 +53,7 @@ function makeUserToken (user, callback) {
 
 /**
  * Produces an authentication error or returns a decoded token
+ * @memberof tools/Authentication
  * @param {object} request Express.js request object
  * @param {boolean} requireCharityUser Flag for calls that only charity users have access to
  * @example

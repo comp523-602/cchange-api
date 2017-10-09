@@ -1,3 +1,4 @@
+/** @namespace model/Object */
 
 // Initialize dependencies
 const Uuid = require('uuid');
@@ -46,7 +47,10 @@ function ObjectProperties (schema) {
 // Object Static Methods: attaches functionality used by the schema in general
 function ObjectStaticMethods (schema) {
 
-	// GUID: returns a unique GUID
+	/**
+	 * Generates a guaranteed unique guid
+	 * @memberof model/Object
+	 */
 	schema.statics.GUID = function (callback) {
 
 		// Save reference to model object
@@ -76,7 +80,10 @@ function ObjectStaticMethods (schema) {
 // Object Instance Methods: attaches functionality related to existing instances of the object
 function ObjectInstanceMethods (schema) {
 
-	// Format: formats a database object for sending back to users
+	/**
+	 * Formats a database object for sending back to users
+	 * @memberof model/Object
+	 */
 	schema.methods.format = function () {
 		var formattedObject = JSON.parse(JSON.stringify(this.toObject()));
 		for (var i in unformattedKeys) delete formattedObject[unformattedKeys[i]];

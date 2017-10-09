@@ -1,4 +1,4 @@
-
+/** @namespace tools/Messages */
 // Messages.js: holds messages
 
 module.exports = {

@@ -1,3 +1,4 @@
+/** @namespace model/CharityToken */
 
 // Initialize dependencies
 const Mongoose = require('mongoose');
@@ -50,7 +51,10 @@ function CharityTokenProperties (schema) {
 // Charity Token Static Methods: attaches functionality used by the schema in general
 function CharityTokenStaticMethods (schema) {
 
-	// Create: creates a new user in the database
+	/**
+	 * Creates a new charity token in the database
+	 * @memberof model/CharityToken
+	 */
 	schema.statics.create = function ({email}, callback) {
 
 		// Save reference to model
@@ -114,6 +118,10 @@ function CharityTokenStaticMethods (schema) {
 // Charity Token Instance Methods: attaches functionality related to existing instances of the object
 function CharityTokenInstanceMethods (schema) {
 
+	/**
+	 * Marks an existing CharityToken as used
+	 * @memberof model/CharityToken
+	 */
 	schema.methods.markUsed = function ({user}, callback) {
 
 		// Save reference to model

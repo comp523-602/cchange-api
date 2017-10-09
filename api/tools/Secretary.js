@@ -1,4 +1,4 @@
-
+/** @namespace tools/Secretary */
 // Secretary.js: used for communication with client (handles responses and errors)
 
 // Initialize dependencies
