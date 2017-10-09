@@ -3,7 +3,7 @@
 var express = require('express');
 
 // Initialize variables
-var path = 'docs/';
+var path = 'designdocs/';
 
 // Run Server: runs all server tasks
 var runServer = function () {
