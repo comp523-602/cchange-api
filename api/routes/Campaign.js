@@ -91,7 +91,10 @@ module.exports = function (server) {
 
 			// Validate fields
 			function (callback) {
-				callback();
+				var fields = [];
+				if (req.body.charity)
+					fields.push(Validation.string('Charity ID (campaign)', req.body.charity));
+				callback(Validation.catchErrors(fields));
 			},
 
 			// Page campaigns and add to request
@@ -99,6 +102,8 @@ module.exports = function (server) {
 
 				// Setup query
 				var query = {};
+
+				if (req.body.charity) query.charity = req.body.charity;
 
 				// Page objects
 				Paging.pageObjects({
