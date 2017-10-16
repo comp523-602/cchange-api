@@ -80,6 +80,8 @@ module.exports = function (server) {
 	 * @apiDescription Queries and returns a list of campaigns
 	 * @apiUse Paging
 	 *
+	 * @apiParam {String} [charity] Filter campaigns by a single charity 
+	 *
 	 * @apiSuccess {Array} updates Array of Campaign objects
 	 *
 	 * @apiUse Error
@@ -93,7 +95,7 @@ module.exports = function (server) {
 			function (callback) {
 				var fields = [];
 				if (req.body.charity)
-					fields.push(Validation.string('Charity ID (campaign)', req.body.charity));
+					fields.push(Validation.string('Charity ID (charity)', req.body.charity));
 				callback(Validation.catchErrors(fields));
 			},
 
