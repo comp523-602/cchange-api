@@ -124,8 +124,9 @@ module.exports = function (server) {
 	 * @apiDescription Edits a charity for a charity user
 	 * @apiUse Authorization
 	 *
-	 * @apiParam {String} name Name of charity
-	 * @apiParam {String} description Description of charity
+	 * @apiParam {String} [name] Name of charity
+	 * @apiParam {String} [description] Description of charity
+	 * @apiParam {String} [logo] Image URL of charity logo
 	 *
 	 * @apiSuccess {Object} charity Charity object
 	 *
@@ -145,9 +146,8 @@ module.exports = function (server) {
 
 			// Validate required fields
 			function (token, callback) {
-				var fields = [
-					Validation.string('Name', req.body.name),
-				];
+				var fields = [];
+				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
 				if (req.body.description) fields.push(Validation.string('Description', req.body.description));
 				if (req.body.logo) fields.push(Validation.imageUrl('Logo', req.body.logo));
 				callback(Validation.catchErrors(), token);
