@@ -145,10 +145,12 @@ module.exports = function (server) {
 
 			// Validate required fields
 			function (token, callback) {
-				callback(Validation.catchErrors([
+				var fields = [
 					Validation.string('Name', req.body.name),
-					Validation.string('Description', req.body.description),
-				]), token);
+				];
+				if (req.body.description) fields.push(Validation.string('Description', req.body.description));
+				if (req.body.logo) fields.push(Validation.imageUrl('Logo', req.body.logo));
+				callback(Validation.catchErrors(), token);
 			},
 
 			// Find charity
@@ -170,72 +172,6 @@ module.exports = function (server) {
 					'token': token,
 					'name': req.body.name,
 					'description': req.body.description,
-				}, function (err, charity) {
-					if (charity) Secretary.addToResponse({
-						'response': res,
-						'key': "charity",
-						'value': charity.format(),
-					});
-					callback(err);
-				});
-			},
-
-		], function (err) {
-			if (err) next(err);
-			else Secretary.success(res);
-		})
-	})
-
-	/**
-	 * @memberof apiDocs
-	 * @api {POST} /charity.logo Logo
-	 * @apiName Logo
-	 * @apiGroup Charity
-	 * @apiDescription Updates a charity's logo for a charity user
-	 * @apiUse Authorization
-	 *
-	 * @apiParam {String} logo URL of logo
-	 *
-	 * @apiSuccess {Object} charity Charity object
-	 *
-	 * @apiUse Error
-	 */
-	server.post('/charity.logo', function (req, res, next) {
-
-		// Synchronously perform the following tasks...
-		Async.waterfall([
-
-			// Authenticate charity user
-			function (callback) {
-				Authentication.authenticateCharityUser(req, function (err, token) {
-					callback(err, token);
-				});
-			},
-
-			// Validate required fields
-			function (token, callback) {
-				callback(Validation.catchErrors([
-					Validation.imageUrl('Logo', req.body.logo),
-				]), token);
-			},
-
-			// Find charity
-			function (token, callback) {
-				Database.findOne({
-					'model': Charity,
-					'query': {
-						'guid': token.charity,
-					}
-				}, function (err, charity) {
-					if (!charity) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
-					else callback(err, token, charity);
-				})
-			},
-
-			// Update charity, add to response
-			function (token, charity, callback) {
-				charity.edit({
-					'token': token,
 					'logo': req.body.logo,
 				}, function (err, charity) {
 					if (charity) Secretary.addToResponse({
