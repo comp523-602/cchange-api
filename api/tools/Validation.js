@@ -40,6 +40,12 @@ function isInvalidNumber (input) {
 	return null;
 };
 
+function isInvalidArray (input) {
+	if (!(input instanceof Array))
+		return Messages.typeErrors.array;
+	return null;
+};
+
 // String validation functions =================================================
 function isInvalidLength (input, minlength, maxlength) {
 	if (minlength && input.length < minlength)
@@ -136,4 +142,18 @@ module.exports.imageUrl = function (name, input) {
 		isInvalidString(input),
 		isInvalidImageURL(input),
 	], name);
+};
+
+module.exports.imageUrlArray = function (name, input) {
+	if (isInvalidArray(input)) return getNamedErrorFromArray([
+		isInvalidArray(input),
+	], name);
+	for (var i in input) {
+		var error = getNamedErrorFromArray([
+			isInvalidString(input[i]),
+			isInvalidImageURL(input[i]),
+		], name+'['+i+']');
+		if (error) return error;
+	};
+	return null;
 };

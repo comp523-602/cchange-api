@@ -39,8 +39,8 @@ function CampaignProperties (schema) {
 			'default': "",
 		},
 
-		// Images: array of campaign image URLs
-		'images': {
+		// Pictures: array of campaign image URLs
+		'pictures': {
 			'type': Array,
 			'default': [],
 		},
@@ -58,7 +58,7 @@ function CampaignProperties (schema) {
 function CampaignStaticMethods (schema) {
 
 	// Create: creates a new campaign in the database
-	schema.statics.create = function ({name, description, charity}, callback) {
+	schema.statics.create = function ({name, description, pictures, charity}, callback) {
 
 		// Save reference to model
 		var Campaign = this;
@@ -82,14 +82,16 @@ function CampaignStaticMethods (schema) {
 				};
 
 				// Setup database update
+				var set = {
+					'guid': GUID,
+					'name': name,
+					'charity': charity.guid,
+					'dateCreated': Dates.now(),
+				};
+				if (description) set.description = description;
+				if (pictures) set.pictures = pictures;
 				var update = {
-					'$set': {
-						'guid': GUID,
-						'name': name,
-						'description': description,
-						'charity': charity.guid,
-						'dateCreated': Dates.now(),
-					}
+					'$set': set
 				};
 
 				// Make database update
@@ -112,7 +114,7 @@ function CampaignStaticMethods (schema) {
 function CampaignInstanceMethods (schema) {
 
 	// Edit: updates campaign object
-	schema.methods.edit = function ({name, description, images, token}, callback) {
+	schema.methods.edit = function ({name, description, pictures, token}, callback) {
 
 		// Authenicate user
 		if (!authenticatedToken(this, token))
@@ -132,7 +134,7 @@ function CampaignInstanceMethods (schema) {
 		};
 		if (name) set.name = name;
 		if (description) set.description = description;
-		if (images) set.images = images;
+		if (pictures) set.pictures = pictures;
 		var update = {
 			'$set': set
 		};

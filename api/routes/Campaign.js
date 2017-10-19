@@ -136,7 +136,8 @@ module.exports = function (server) {
 	 * @apiUse Authorization
 	 *
 	 * @apiParam {String} name Name of campaign
-	 * @apiParam {String} description Description of campaign
+	 * @apiParam {String} [description] Description of campaign
+	 * @apiParam {Array} [pictures] Array of image URLs for campaign pictures
 	 *
 	 * @apiSuccess {Object} campaign Campaign object
 	 *
@@ -156,10 +157,13 @@ module.exports = function (server) {
 
 			// Validate required fields
 			function (token, callback) {
-				callback(Validation.catchErrors([
+				var fields = [
 					Validation.string('Name', req.body.name),
-					Validation.string('Description', req.body.description),
-				]), token);
+
+				];
+				if (req.body.description) fields.push(Validation.string('Description', req.body.description));
+				if (req.body.pictures) fields.push(Validation.imageUrlArray('Pictures', req.body.pictures));
+				callback(Validation.catchErrors(fields), token);
 			},
 
 			// Find charity
@@ -181,6 +185,7 @@ module.exports = function (server) {
 					'charity': charity,
 					'name': req.body.name,
 					'description': req.body.description,
+					'pictures': req.body.pictures,
 				}, function (err, campaign) {
 					if (campaign) Secretary.addToResponse({
 						'response': res,
@@ -216,8 +221,9 @@ module.exports = function (server) {
 	 * @apiUse Authorization
 	 *
 	 * @apiParam {String} campaign GUID of campaign to edit
-	 * @apiParam {String} name Name of campaign
-	 * @apiParam {String} description Description of campaign
+	 * @apiParam {String} [name] Name of campaign
+	 * @apiParam {String} [description] Description of campaign
+	 * @apiParam {Array} [pictures] Array of image URLs for campaign pictures
 	 *
 	 * @apiSuccess {Object} campaign Campaign object
 	 *
@@ -237,11 +243,13 @@ module.exports = function (server) {
 
 			// Validate required fields
 			function (token, callback) {
-				callback(Validation.catchErrors([
+				var fields = [
 					Validation.string('Campaign ID', req.body.campaign),
-					Validation.string('Name', req.body.name),
-					Validation.string('Description', req.body.description),
-				]), token);
+				];
+				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
+				if (req.body.description) fields.push(Validation.string('Description', req.body.description));
+				if (req.body.pictures) fields.push(Validation.imageUrlArray('Pictures', req.body.pictures));
+				callback(Validation.catchErrors(fields), token);
 			},
 
 			// Find campaign
@@ -263,6 +271,7 @@ module.exports = function (server) {
 					'token': token,
 					'name': req.body.name,
 					'description': req.body.description,
+					'pictures': req.body.pictures,
 				}, function (err, campaign) {
 					if (campaign) Secretary.addToResponse({
 						'response': res,

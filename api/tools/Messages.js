@@ -20,6 +20,7 @@ module.exports = {
 		'string': " is not a string",
 		'emptyString': " is an empty string",
 		'number': " is not a number",
+		'array': " is not an array",
 	},
 	'fieldErrors': {
 		'missing': " is missing",

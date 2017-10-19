@@ -127,7 +127,7 @@ module.exports = function (server) {
 	 * @apiUse Authorization
 	 *
 	 * @apiParam {String} name Name of update
-	 * @apiParam {String} description Description of update
+	 * @apiParam {String} [description] Description of update
 	 *
 	 * @apiSuccess {Object} update Update object
 	 *
@@ -147,10 +147,11 @@ module.exports = function (server) {
 
 			// Validate required fields
 			function (token, callback) {
-				callback(Validation.catchErrors([
+				var fields = [
 					Validation.string('Name', req.body.name),
-					Validation.string('Description', req.body.description),
-				]), token);
+				];
+				if (req.body.description) fields.push(Validation.string('Description', req.body.description));
+				callback(Validation.catchErrors(fields), token);
 			},
 
 			// Find charity
@@ -207,8 +208,8 @@ module.exports = function (server) {
 	 * @apiUse Authorization
 	 *
 	 * @apiParam {String} update GUID of update to edit
-	 * @apiParam {String} name Name of update
-	 * @apiParam {String} description Description of update
+	 * @apiParam {String} [name] Name of update
+	 * @apiParam {String} [description] Description of update
 	 *
 	 * @apiSuccess {Object} update Update object
 	 *
@@ -228,11 +229,12 @@ module.exports = function (server) {
 
 			// Validate required fields
 			function (token, callback) {
-				callback(Validation.catchErrors([
+				var fields = [
 					Validation.string('Update ID', req.body.update),
-					Validation.string('Name', req.body.name),
-					Validation.string('Description', req.body.description),
-				]), token);
+				];
+				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
+				if (req.body.description) fields.push(Validation.string('Description', req.body.description));
+				callback(Validation.catchErrors(fields), token);
 			},
 
 			// Find update
