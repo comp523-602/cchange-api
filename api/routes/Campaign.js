@@ -80,7 +80,7 @@ module.exports = function (server) {
 	 * @apiDescription Queries and returns a list of campaigns
 	 * @apiUse Paging
 	 *
-	 * @apiParam {String} [charity] Filter campaigns by a single charity 
+	 * @apiParam {String} [charity] Filter campaigns by a single charity
 	 *
 	 * @apiSuccess {Array} updates Array of Campaign objects
 	 *
@@ -104,7 +104,6 @@ module.exports = function (server) {
 
 				// Setup query
 				var query = {};
-
 				if (req.body.charity) query.charity = req.body.charity;
 
 				// Page objects

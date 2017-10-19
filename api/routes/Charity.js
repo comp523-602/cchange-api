@@ -39,7 +39,7 @@ module.exports = function (server) {
 			// Validate required fields
 			function (callback) {
 				callback(Validation.catchErrors([
-					Validation.string('Charity', req.body.charity),
+					Validation.string('Charity ID (charity)', req.body.charity),
 				]));
 			},
 
@@ -150,10 +150,10 @@ module.exports = function (server) {
 				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
 				if (req.body.description) fields.push(Validation.string('Description', req.body.description));
 				if (req.body.logo) fields.push(Validation.imageUrl('Logo', req.body.logo));
-				callback(Validation.catchErrors(), token);
+				callback(Validation.catchErrors(fields), token);
 			},
 
-			// Find charity
+			// Find charity using token
 			function (token, callback) {
 				Database.findOne({
 					'model': Charity,

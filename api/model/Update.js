@@ -77,7 +77,8 @@ function UpdateStaticMethods (schema) {
 					'$set': {
 						'guid': GUID,
 						'name': name,
-						'charity': charity.guid
+						'charity': charity.guid,
+						'dateCreated': Dates.now(),
 					}
 				};
 
@@ -119,11 +120,13 @@ function UpdateInstanceMethods (schema) {
 		};
 
 		// Setup database update
+		var set = {
+			'lastModified': Dates.now(),
+		};
+		if (name) set.name = name;
+		if (description) set.description = description;
 		var update = {
-			'$set': {
-				'name': name,
-				'description': description,
-			}
+			'$set': set
 		};
 
 		// Make database update

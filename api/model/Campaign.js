@@ -39,6 +39,18 @@ function CampaignProperties (schema) {
 			'default': "",
 		},
 
+		// Images: array of campaign image URLs
+		'images': {
+			'type': Array,
+			'default': [],
+		},
+
+		// Updates: array of update GUIDs
+		'updates': {
+			'type': Array,
+			'default': [],
+		},
+
     });
 };
 
@@ -75,7 +87,8 @@ function CampaignStaticMethods (schema) {
 						'guid': GUID,
 						'name': name,
 						'description': description,
-						'charity': charity.guid
+						'charity': charity.guid,
+						'dateCreated': Dates.now(),
 					}
 				};
 
@@ -99,7 +112,7 @@ function CampaignStaticMethods (schema) {
 function CampaignInstanceMethods (schema) {
 
 	// Edit: updates campaign object
-	schema.methods.edit = function ({name, description, token}, callback) {
+	schema.methods.edit = function ({name, description, images, token}, callback) {
 
 		// Authenicate user
 		if (!authenticatedToken(this, token))
@@ -114,11 +127,14 @@ function CampaignInstanceMethods (schema) {
 		};
 
 		// Setup database update
+		var set = {
+			'lastModified': Dates.now(),
+		};
+		if (name) set.name = name;
+		if (description) set.description = description;
+		if (images) set.images = images;
 		var update = {
-			'$set': {
-				'name': name,
-				'description': description,
-			}
+			'$set': set
 		};
 
 		// Make database update

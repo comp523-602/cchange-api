@@ -10,12 +10,6 @@ const Dates = require('./../tools/Dates');
 function UserProperties (schema) {
     schema.add({
 
-		// Name: the user's name
-		'name': {
-			'type': String,
-			'required': true
-		},
-
 		// Email: the user's email (used for user uniqueness)
 		'email': {
 			'type': String,
@@ -31,10 +25,34 @@ function UserProperties (schema) {
 			'required': true
 		},
 
+		// Name: the user's name
+		'name': {
+			'type': String,
+			'required': true
+		},
+
+		// Bio: the user's bio
+		'bio': {
+			'type': String,
+			'required': true
+		},
+
+		// Picture: image URL of user's profile picture
+		'picture': {
+			'type': String,
+			'required': true
+		},
+
 		// Charity: GUID of charity which user belongs to, used to distinguish user types
 		'charity': {
 			'type': String,
 			'default': null,
+		},
+
+		// Posts: array of post GUIDs which belong to user
+		'posts': {
+			'type': Array,
+			'default': [],
 		},
 
     });
@@ -100,6 +118,69 @@ function UserStaticMethods (schema) {
 
 // User Instance Methods: attaches functionality related to existing instances of the object
 function UserInstanceMethods (schema) {
+
+	// Add Post: adds to user posts array
+	schema.methods.addPost = function ({post}, callback) {
+
+		// Save reference to model
+		var User = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$push': {
+				'posts': post.guid,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': User.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, user) {
+			callback(err, user);
+		});
+	};
+
+	/**
+	 * Updates an existing User in the database
+	 * @memberof model/User
+	 */
+	schema.methods.edit = function ({name, bio, picture, token}, callback) {
+
+		// Save reference to model
+		var User = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var set = {
+			'lastModified': Dates.now(),
+		};
+		if (name) set.name = name;
+		if (bio) set.bio = bio;
+		if (picture) set.picture = picture;
+		var update = {
+			'$set': set
+		};
+
+		// Make database update
+		Database.update({
+			'model': User.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, user) {
+			callback(err, user);
+		});
+	};
 
 };
 

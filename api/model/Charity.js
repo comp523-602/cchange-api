@@ -99,6 +99,7 @@ function CharityStaticMethods (schema) {
 						'guid': GUID,
 						'name': name,
 						'charityToken': charityToken,
+						'dateCreated': Dates.now(),
 					}
 				};
 
@@ -231,7 +232,9 @@ function CharityInstanceMethods (schema) {
 		};
 
 		// Setup database update
-		var set = {};
+		var set = {
+			'lastModified': Dates.now(),
+		};
 		if (name) set.name = name;
 		if (description) set.description = description;
 		if (logo) set.logo = logo;

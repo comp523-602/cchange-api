@@ -334,4 +334,75 @@ module.exports = function (server) {
 			else Secretary.success(res);
 		});
 	})
+
+	/**
+	 * @memberof apiDocs
+	 * @api {POST} /user.edit Edit
+	 * @apiName Edit
+	 * @apiGroup User
+	 * @apiDescription Edits an existing user
+	 *
+	 * @apiParam {String} [name] User's name
+	 * @apiParam {String} [bio] User's bio
+	 * @apiParam {String} [picture] URL of User's profile picture
+	 *
+	 * @apiSuccess {Object} user User object
+	 *
+	 * @apiUse Error
+	 */
+	server.post('/user.edit', function (req, res, next) {
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			function (callback) {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Validate fields
+			function (token, callback) {
+				var fields = [];
+				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
+				if (req.body.bio) fields.push(Validation.string('Bio', req.body.bio));
+				if (req.body.picture) fields.push(Validation.imageUrl('Picture', req.body.picture));
+				callback(Validation.catchErrors(fields), token);
+			},
+
+			// Find user using token
+			function (token, callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user,
+					},
+				}, function (err, user) {
+					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, user);
+				});
+			},
+
+			// Update user, add to reply
+			function (user, callback) {
+				user.edit({
+					'name': req.body.name,
+					'bio': req.body.bio,
+					'picture': req.body.picture,
+				}, function (err, user) {
+					if (user) Secretary.addToResponse({
+						'response': res,
+						'key': "user",
+						'value': user.format(),
+					});
+					callback(err, user);
+				});
+			},
+
+		], function (err) {
+			if (err) next(err);
+			else Secretary.success(res);
+		});
+	})
 };

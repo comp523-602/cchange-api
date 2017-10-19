@@ -40,7 +40,7 @@ module.exports = function (server) {
 			// Validate required fields
 			function (callback) {
 				callback(Validation.catchErrors([
-					Validation.string('Update ID (campaign)', req.body.update),
+					Validation.string('Update ID (update)', req.body.update),
 				]));
 			},
 
@@ -248,7 +248,7 @@ module.exports = function (server) {
 				})
 			},
 
-			// Create update
+			// Edit update
 			function (token, update, callback) {
 				update.edit({
 					'token': token,

@@ -39,7 +39,7 @@ function makeUserToken (user, callback) {
 	// Setup base object
 	var signedObject = {
 		'user': user.guid,
-		'exp': parseInt(Dates.fromNow(3, 'days')),
+		'exp': parseInt(Dates.fromNow(60, 'days')),
 	};
 
 	// Add charity if applicable
