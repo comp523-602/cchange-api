@@ -196,7 +196,7 @@ module.exports = function (server) {
 
 	/**
 	 * @memberof apiDocs
-	 * @api {POST} /user.create.chairty Create (Charity)
+	 * @api {POST} /user.create.charity Create (Charity)
 	 * @apiName Create (Charity)
 	 * @apiGroup User
 	 * @apiDescription Creates a new user with a charity, returns authentication, user, charity
@@ -271,7 +271,7 @@ module.exports = function (server) {
 			function (charityToken, callback) {
 				Charity.create({
 					'name': req.body.charityName,
-					'charityToken': charityToken.guid,
+					'charityToken': charityToken,
 				}, function (err, charity) {
 					callback(err, charityToken, charity);
 				});

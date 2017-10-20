@@ -10,7 +10,13 @@ const Dates = require('./../tools/Dates');
 // Initialize config
 const config = require('./../../config');
 
-// Authenticated Token: authenicates user to edit campaign
+/**
+ * Checks if authenticated user can edit campaign
+ * @memberof model/Campaign
+ * @param {Object} campaign Campaign object
+ * @param {Object} token Decoded token object
+ * @return {Boolean} True if user can edit campaign
+ */
 function authenticatedToken (campaign, token) {
 	if (token.charity == campaign.charity) return true;
 	return false;
@@ -57,7 +63,16 @@ function CampaignProperties (schema) {
 // Campaign Static Methods: attaches functionality used by the schema in general
 function CampaignStaticMethods (schema) {
 
-	// Create: creates a new campaign in the database
+	/**
+	 * Creates a new campaign in the database
+	 * @memberof model/Campaign
+	 * @param {Object} params
+	 * @param {String} params.name Name of campaign
+	 * @param {String} [params.description] Campaign description
+	 * @param {Array} [params.pictures] Array of image URLs
+	 * @param {Object} params.charity Charity object
+	 * @param {function(err, campaign)} callback Callback function
+	 */
 	schema.statics.create = function ({name, description, pictures, charity}, callback) {
 
 		// Save reference to model
@@ -113,7 +128,16 @@ function CampaignStaticMethods (schema) {
 // Campaign Instance Methods: attaches functionality related to existing instances of the object
 function CampaignInstanceMethods (schema) {
 
-	// Edit: updates campaign object
+	/**
+	 * Edits a campaign
+	 * @memberof model/Campaign#
+	 * @param {Object} params
+	 * @param {String} [params.name] Name of campaign
+	 * @param {String} [params.description] Campaign description
+	 * @param {Array} [params.pictures] Array of image URLs
+	 * @param {Object} params.token Decoded authentication token object
+	 * @param {function(err, campaign)} callback Callback function
+	 */
 	schema.methods.edit = function ({name, description, pictures, token}, callback) {
 
 		// Authenicate user

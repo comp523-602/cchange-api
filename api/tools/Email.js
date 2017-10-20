@@ -11,8 +11,16 @@ const config = require('./../../config');
 SendGrid.setApiKey(config.sendgrid);
 
 // Functions ===================================================================
-
 module.exports = {
+
+	/**
+	 * Sends an email with a charity token
+	 * @memberof tools/Email
+	 * @param {Object} params
+	 * @param {String} params.token Encoded charity token string
+	 * @param {String} params.email Address to send email to
+	 * @param {function (err)} callback Callback function
+	 */
 	sendCharityToken: function ({token, email}, callback) {
 
 		// Initialize route

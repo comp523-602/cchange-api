@@ -10,7 +10,13 @@ const Dates = require('./../tools/Dates');
 // Initialize config
 const config = require('./../../config');
 
-// Authenticated Token: authenicates user to edit update
+/**
+ * Checks if authenticated user can edit update
+ * @memberof model/Update
+ * @param {Object} update Update object
+ * @param {Object} token Decoded token object
+ * @return {Boolean} True if user can edit update
+ */
 function authenticatedToken (update, token) {
 	if (token.charity == update.charity) return true;
 	return false;
@@ -48,8 +54,13 @@ function UpdateStaticMethods (schema) {
 	/**
 	 * Creates a new update in the database
 	 * @memberof model/Update
+	 * @param {Object} params
+	 * @param {String} params.name Name of update
+	 * @param {String} [params.description] Update description
+	 * @param {Object} params.charity Charity object associated with update
+	 * @param {function(err, update)} callback Callback function
 	 */
-	schema.statics.create = function ({name, charity}, callback) {
+	schema.statics.create = function ({name, description, charity}, callback) {
 
 		// Save reference to model
 		var Update = this;
@@ -73,13 +84,15 @@ function UpdateStaticMethods (schema) {
 				};
 
 				// Setup database update
+				var set = {
+					'guid': GUID,
+					'name': name,
+					'charity': charity.guid,
+					'dateCreated': Dates.now(),
+				};
+				if (description) set.description = description;
 				var update = {
-					'$set': {
-						'guid': GUID,
-						'name': name,
-						'charity': charity.guid,
-						'dateCreated': Dates.now(),
-					}
+					'$set': set
 				};
 
 				// Make database update
@@ -102,8 +115,13 @@ function UpdateStaticMethods (schema) {
 function UpdateInstanceMethods (schema) {
 
 	/**
-	 * Updates an existing update in the database
-	 * @memberof model/Update
+	 * Edits an exiting update
+	 * @memberof model/Update#
+	 * @param {Object} params
+	 * @param {String} [params.name] Name of update
+	 * @param {String} [params.description] Update description
+	 * @param {Object} params.token Decoded authentication token object
+	 * @param {function(err, update)} callback Callback function
 	 */
 	schema.methods.edit = function ({name, description, token}, callback) {
 

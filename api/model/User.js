@@ -64,6 +64,12 @@ function UserStaticMethods (schema) {
 	/**
 	 * Creates a new user in the database
 	 * @memberof model/User
+	 * @param {Object} params
+	 * @param {String} params.name Name of user
+	 * @param {String} params.email User email
+	 * @param {String} params.password Hashed password for user
+	 * @param {String} params.charityGUID GUID of charity object associated with user
+	 * @param {function(err, update)} callback Callback function
 	 */
 	schema.statics.create = function ({name, email, password, charityGUID}, callback) {
 
@@ -119,7 +125,13 @@ function UserStaticMethods (schema) {
 // User Instance Methods: attaches functionality related to existing instances of the object
 function UserInstanceMethods (schema) {
 
-	// Add Post: adds to user posts array
+	/**
+	 * Adds a post to the posts array
+	 * @memberof model/User#
+	 * @param {Object} params
+	 * @param {Object} params.post Post object
+	 * @param {function(err, update)} callback Callback function
+	 */
 	schema.methods.addPost = function ({post}, callback) {
 
 		// Save reference to model
@@ -148,10 +160,15 @@ function UserInstanceMethods (schema) {
 	};
 
 	/**
-	 * Updates an existing User in the database
-	 * @memberof model/User
+	 * Updates an existing user
+	 * @memberof model/User#
+	 * @param {Object} params
+	 * @param {String} [params.name] Name of user
+	 * @param {String} [params.bio] User bio
+	 * @param {String} [params.picture] Image URL of user picture
+	 * @param {function(err, update)} callback Callback function
 	 */
-	schema.methods.edit = function ({name, bio, picture, token}, callback) {
+	schema.methods.edit = function ({name, bio, picture}, callback) {
 
 		// Save reference to model
 		var User = this;

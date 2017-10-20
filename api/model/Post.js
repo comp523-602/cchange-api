@@ -7,8 +7,14 @@ const Tokens = require('jsonwebtoken');
 const Database = require('./../tools/Database');
 const Dates = require('./../tools/Dates');
 
-// Authenticated Token: authenicates user to edit post
-function authenticatedToken (update, token) {
+/**
+ * Checks if authenticated user can edit post
+ * @memberof model/Post
+ * @param {Object} post Post object
+ * @param {Object} token Decoded token object
+ * @return {Boolean} True if user can edit post
+ */
+function authenticatedToken (post, token) {
 	if (token.user == post.user) return true;
 	return false;
 };
@@ -55,6 +61,12 @@ function PostStaticMethods (schema) {
 	/**
 	 * Creates a new post in the database
 	 * @memberof model/Post
+	 * @param {Object} params
+	 * @param {Object} params.user User object of post creator
+	 * @param {Object} params.campaign Campaign object associated with post
+	 * @param {String} params.image Image URL
+	 * @param {String} params.caption Post caption
+	 * @param {function(err, post)} callback Callback function
 	 */
 	schema.statics.create = function ({user, campaign, image, caption}, callback) {
 
@@ -113,8 +125,13 @@ function PostStaticMethods (schema) {
 function PostInstanceMethods (schema) {
 
 	/**
-	 * Updates an existing post in the database
-	 * @memberof model/Post
+	 * Edits an existing post
+	 * @memberof model/Post#
+	 * @param {Object} params
+	 * @param {Object} params.token Decoded authentication token object
+	 * @param {String} [params.image] Image URL
+	 * @param {String} [params.caption] Post caption
+	 * @param {function(err, post)} callback Callback function
 	 */
 	schema.methods.edit = function ({token, image, caption}, callback) {
 

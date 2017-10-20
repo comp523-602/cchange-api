@@ -10,7 +10,13 @@ const Dates = require('./../tools/Dates');
 // Initialize config
 const config = require('./../../config');
 
-// Authenticated Token: authenicates user to edit charity
+/**
+ * Checks if authenticated user can edit charity
+ * @memberof model/Charity
+ * @param {Object} charity Charity object
+ * @param {Object} token Decoded token object
+ * @return {Boolean} True if user can edit charity
+ */
 function authenticatedToken (charity, token) {
 	if (token.charity == charity.guid) return true;
 	return false;
@@ -69,7 +75,14 @@ function CharityProperties (schema) {
 // Charity Static Methods: attaches functionality used by the schema in general
 function CharityStaticMethods (schema) {
 
-	// Create: creates a new charity in the database
+	/**
+	 * Creates a new charity in the database
+	 * @memberof model/Charity
+	 * @param {Object} params
+	 * @param {String} params.name Name of campaign
+	 * @param {Object} params.charityToken Charity Token object
+	 * @param {function(err, charity)} callback Callback function
+	 */
 	schema.statics.create = function ({name, charityToken}, callback) {
 
 		// Save reference to model
@@ -98,7 +111,7 @@ function CharityStaticMethods (schema) {
 					'$set': {
 						'guid': GUID,
 						'name': name,
-						'charityToken': charityToken,
+						'charityToken': charityToken.guid,
 						'dateCreated': Dates.now(),
 					}
 				};
@@ -122,8 +135,14 @@ function CharityStaticMethods (schema) {
 // Charity Instance Methods: attaches functionality related to existing instances of the object
 function CharityInstanceMethods (schema) {
 
-	// Add User: adds to charity users array
-	schema.methods.addUser = function ({user, token}, callback) {
+	/**
+	 * Adds a user to the users array
+	 * @memberof model/Charity#
+	 * @param {Object} params
+	 * @param {Object} params.user User object to be added
+	 * @param {function(err, charity)} callback Callback function
+	 */
+	schema.methods.addUser = function ({user}, callback) {
 
 		// Note: doesn't require authorization (addUser called after create)
 
@@ -152,7 +171,14 @@ function CharityInstanceMethods (schema) {
 		});
 	};
 
-	// Add Campaign: adds to charity campaigns array
+	/**
+	 * Adds a campaign to the campaigns array
+	 * @memberof model/Charity#
+	 * @param {Object} params
+	 * @param {Object} params.campaign Campaign object to be added
+	 * @param {Object} params.token Decoded authentication token object
+	 * @param {function(err, charity)} callback Callback function
+	 */
 	schema.methods.addCampaign = function ({campaign, token}, callback) {
 
 		// Authenicate user
@@ -184,7 +210,14 @@ function CharityInstanceMethods (schema) {
 		});
 	};
 
-	// Add Update: adds to charity updates array
+	/**
+	 * Adds an update to the updates array
+	 * @memberof model/Charity#
+	 * @param {Object} params
+	 * @param {Object} params.update Update object to be added
+	 * @param {Object} params.token Decoded authentication token object
+	 * @param {function(err, charity)} callback Callback function
+	 */
 	schema.methods.addUpdate = function ({update, token}, callback) {
 
 		// Authenicate user
@@ -216,7 +249,16 @@ function CharityInstanceMethods (schema) {
 		});
 	};
 
-	// Edit: updates charity object
+	/**
+	 * Edits a charity object
+	 * @memberof model/Charity#
+	 * @param {Object} params
+	 * @param {Object} params.token Decoded authentication token object
+	 * @param {String} params.name Name of charity
+	 * @param {String} params.description Description of charity
+	 * @param {String} params.logo Image URL of charity logo
+	 * @param {function(err, charity)} callback Callback function
+	 */
 	schema.methods.edit = function ({token, name, description, logo}, callback) {
 
 		// Authenicate user

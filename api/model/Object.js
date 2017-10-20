@@ -48,8 +48,9 @@ function ObjectProperties (schema) {
 function ObjectStaticMethods (schema) {
 
 	/**
-	 * Generates a guaranteed unique guid
+	 * Generates a guaranteed unique GUID for a Mongo collection
 	 * @memberof model/Object
+	 * @param {function(err, GUID)} callback Callback function
 	 */
 	schema.statics.GUID = function (callback) {
 
@@ -81,8 +82,9 @@ function ObjectStaticMethods (schema) {
 function ObjectInstanceMethods (schema) {
 
 	/**
-	 * Formats a database object for sending back to users
-	 * @memberof model/Object
+	 * Returns a formatted version of a database object
+	 * @memberof model/Object#
+	 * @return {Object} Formatted database object
 	 */
 	schema.methods.format = function () {
 		var formattedObject = JSON.parse(JSON.stringify(this.toObject()));

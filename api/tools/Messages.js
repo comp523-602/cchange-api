@@ -2,6 +2,11 @@
 // Messages.js: holds messages
 
 module.exports = {
+
+	/**
+	 * HTTP Response Codes
+	 * @memberof tools/Messages
+	 */
 	'codes': {
 		'success': 200,
 		'serverError': 500,
@@ -9,6 +14,11 @@ module.exports = {
 		'unauthorizedError': 401,
 		'conflictError': 409
 	},
+
+	/**
+	 * Authentication messages
+	 * @memberof tools/Messages
+	 */
 	'authErrors': {
 		'missingToken': "Missing authorization token",
 		'unauthorized': "Unauthorized",
@@ -16,12 +26,22 @@ module.exports = {
 		'noAccess': "Unauthorized to access object",
 		'adminUnauthorized': "You are not authorized to invite charities",
 	},
+
+	/**
+	 * Type error messages
+	 * @memberof tools/Messages
+	 */
 	'typeErrors': {
 		'string': " is not a string",
 		'emptyString': " is an empty string",
 		'number': " is not a number",
 		'array': " is not an array",
 	},
+
+	/**
+	 * Field error messages
+	 * @memberof tools/Messages
+	 */
 	'fieldErrors': {
 		'missing': " is missing",
 		'passwordLetter': " is missing a letter",
@@ -30,6 +50,11 @@ module.exports = {
 		'sortKey': " is not a valid sort key",
 		'invalidImageURL': " is not a valid image URL",
 	},
+
+	/**
+	 * Conflict error messages
+	 * @memberof tools/Messages
+	 */
 	'conflictErrors': {
 		'objectNotFound': "Object not found in the database",
 		'emailAlreadyUsed': "An account with this email already exists",
@@ -39,6 +64,16 @@ module.exports = {
 		'charityTokenUsed': "Your invitiation has already been used",
 		'charityTokenExpired': "Your invitation has expired",
 	},
+
+	/**
+	 * Basic server error message
+	 * @memberof tools/Messages
+	 */
 	'serverError': "A server error occured",
+
+	/**
+	 * Success message
+	 * @memberof tools/Messages
+	 */
 	'success': "Success!"
 };

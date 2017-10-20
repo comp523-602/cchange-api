@@ -54,6 +54,9 @@ function CharityTokenStaticMethods (schema) {
 	/**
 	 * Creates a new charity token in the database
 	 * @memberof model/CharityToken
+	 * @param {Object} params
+	 * @param {String} params.email Email to attach to charity token
+	 * @param {function(err, charityToken)} callback Callback function
 	 */
 	schema.statics.create = function ({email}, callback) {
 
@@ -119,8 +122,11 @@ function CharityTokenStaticMethods (schema) {
 function CharityTokenInstanceMethods (schema) {
 
 	/**
-	 * Marks an existing CharityToken as used
-	 * @memberof model/CharityToken
+	 * Marks a charity token as used
+	 * @memberof model/CharityToken#
+	 * @param {Object} params
+	 * @param {Ojbect} params.user User object of user who used token
+	 * @param {function(err, charityToken)} callback Callback function
 	 */
 	schema.methods.markUsed = function ({user}, callback) {
 

@@ -95,13 +95,25 @@ function isInvalidImageURL (input) {
 
 // Exports =====================================================================
 
-// Catch Errors: returns possible errors from an error of validation functions
-module.exports.catchErrors = function (errors, callback) {
+/**
+ * Returns an error config object for the first in an array of errors
+ * @memberof tools/Validation
+ * @param {Array} errors Array of error messages
+ * @return {Object} Error config object (or null)
+ */
+module.exports.catchErrors = function (errors) {
 	var errorMessage = getErrorsFromArray(errors);
 	if (errorMessage) return Secretary.requestError(errorMessage);
 	return null;
 };
 
+/**
+ * Returns error with email input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
 module.exports.email = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidString(input),
@@ -109,6 +121,13 @@ module.exports.email = function (name, input) {
 	], name);
 };
 
+/**
+ * Returns error with password input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
 module.exports.password = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidString(input),
@@ -117,12 +136,26 @@ module.exports.password = function (name, input) {
 	], name);
 };
 
+/**
+ * Returns error with string input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
 module.exports.string = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidString(input),
 	], name);
 };
 
+/**
+ * Returns error with pageSize input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {Number} input Field input
+ * @return {Object} Error message (or null)
+ */
 module.exports.pageSize = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidNumber(input),
@@ -130,6 +163,13 @@ module.exports.pageSize = function (name, input) {
 	], name);
 };
 
+/**
+ * Returns error with sort input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
 module.exports.sort = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidString(input),
@@ -137,6 +177,13 @@ module.exports.sort = function (name, input) {
 	], name);
 };
 
+/**
+ * Returns error with image URL input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
 module.exports.imageUrl = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidString(input),
@@ -144,6 +191,13 @@ module.exports.imageUrl = function (name, input) {
 	], name);
 };
 
+/**
+ * Returns error with image URL array input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {Array} input Field input
+ * @return {Object} Error message (or null)
+ */
 module.exports.imageUrlArray = function (name, input) {
 	if (isInvalidArray(input)) return getNamedErrorFromArray([
 		isInvalidArray(input),

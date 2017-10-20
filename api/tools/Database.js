@@ -1,6 +1,12 @@
 /** @namespace tools/Database */
 // Database.js: provides tools for accessing / updating the database
 
+/**
+ * Formats an array of objects
+ * @memberof tools/Database
+ * @param {Array} objects Array of objects
+ * @return {Array} Array of formatted objects
+ */
 function formatObjects(objects) {
 	if (!objects) return;
 	var formatted = [];
@@ -8,21 +14,45 @@ function formatObjects(objects) {
 	return formatted;
 }
 
-// Find One: finds a single object in the database using model
+/**
+ * Finds a single object in the database using model
+ * @memberof tools/Database
+ * @param {Object} params
+ * @param {Object} params.model Mongoose model object
+ * @param {Object} params.query MongoDB query object
+ * @param {function (err, object)} callback Callback function
+ */
 module.exports.findOne = function ({model, query}, callback) {
     model.findOne(query, function (err, object) {
         callback(err, object);
     });
 };
 
-// Page: finds a limited, sorted list of objects in the database using model
+/**
+ * Finds a limited, sorted list of objects in the database using model
+ * @memberof tools/Database
+ * @param {Object} params
+ * @param {Object} params.model Mongoose model object
+ * @param {Object} params.query MongoDB query object
+ * @param {Number} params.pageSize Number of objects needed
+ * @param {String} params.sort Object property to sort by
+ * @param {function (err, objects)} callback Callback function
+ */
 module.exports.page = function ({model, query, pageSize, sort}, callback) {
 	model.find(query).sort(sort).limit(pageSize).exec(function (err, objects) {
 		callback(err, formatObjects(objects));
 	});
 };
 
-// Update: queries and updates an object in the database using model
+/**
+ * Queries and updates an object in the database using model
+ * @memberof tools/Database
+ * @param {Object} params
+ * @param {Object} params.model Mongoose model object
+ * @param {Object} params.query MongoDB query object
+ * @param {Number} params.update MongoDB update query object
+ * @param {function (err, object)} callback Callback function
+ */
 module.exports.update = function ({model, query, update}, callback) {
 
 	// Setup options

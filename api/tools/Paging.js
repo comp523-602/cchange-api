@@ -11,6 +11,15 @@ const PageSize = 20;
 const Sort = "asc";
 const SortKey = "dateCreated";
 
+/**
+ * Handles default paging behavior, uses Database to page object
+ * @memberof tools/Paging
+ * @param {Object} params
+ * @param {Object} params.model Mongoose model object
+ * @param {Object} params.query MongoDB query object
+ * @param {Number} params.params Paging parameters
+ * @param {function (err, objects)} callback Callback function
+ */
 function pageObjects ({model, query, params}, callback) {
 
 	// Synchronously perform the following tasks...
