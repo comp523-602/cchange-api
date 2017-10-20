@@ -10,7 +10,7 @@ var runServer = function () {
 
 	// Setup server
 	var server = express();
-	server.listen(4001, "165.227.73.61", function () {
+	server.listen(4001, "127.0.0.1", function () {
 	    console.log('Serving cChange api docs...');
 	});
 
