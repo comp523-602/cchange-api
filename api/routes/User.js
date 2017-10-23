@@ -22,6 +22,104 @@ module.exports = function (server) {
 
 	/**
 	 * @memberof apiDocs
+	 * @api {POST} /user User
+	 * @apiName User
+	 * @apiGroup User
+	 * @apiDescription Queries and returns a single user object
+	 *
+	 * @apiParam {String} user GUID of user to return
+	 *
+	 * @apiSuccess {Object} user User object
+	 *
+	 * @apiUse Error
+	 */
+	server.post('/user', function (req, res, next) {
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Validate required fields
+			function (callback) {
+				callback(Validation.catchErrors([
+					Validation.string('User ID (user)', req.body.user),
+				]));
+			},
+
+			// Find charity and add to request
+			function (callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': req.body.user,
+					}
+				}, function (err, user) {
+					if (!user) return callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					Secretary.addToResponse({
+						'response': res,
+						'key': "user",
+						'value': user.format(),
+					});
+					callback(err);
+				})
+			},
+
+		], function (err) {
+			if (err) next(err);
+			else Secretary.success(res);
+		})
+	})
+
+	/**
+	 * @memberof apiDocs
+	 * @api {POST} /users Users
+	 * @apiName Users
+	 * @apiGroup User
+	 * @apiDescription Queries and returns a list of charities
+	 * @apiUse Paging
+	 *
+	 * @apiSuccess {Array} charities Array of Charity objects
+	 *
+	 * @apiUse Error
+	 */
+	server.post('/charities', function (req, res, next) {
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Validate required fields
+			function (callback) {
+				callback();
+			},
+
+			// Find charity and add to request
+			function (callback) {
+
+				// Setup query
+				var query = {};
+
+				// Page objects
+				Paging.pageObjects({
+					'model': User,
+					'query': query,
+					'params': req.body,
+				}, function (err, objects) {
+					Secretary.addToResponse({
+						'response': res,
+						'key': "users",
+						'value': objects
+					});
+					callback(err);
+				});
+			},
+
+		], function (err) {
+			if (err) next(err);
+			else Secretary.success(res);
+		})
+	})
+
+	/**
+	 * @memberof apiDocs
 	 * @api {POST} /user.login Login
 	 * @apiName Login
 	 * @apiGroup User
