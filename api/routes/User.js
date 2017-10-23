@@ -45,7 +45,7 @@ module.exports = function (server) {
 				]));
 			},
 
-			// Find charity and add to request
+			// Find user and add to request
 			function (callback) {
 				Database.findOne({
 					'model': User,
@@ -74,14 +74,14 @@ module.exports = function (server) {
 	 * @api {POST} /users Users
 	 * @apiName Users
 	 * @apiGroup User
-	 * @apiDescription Queries and returns a list of charities
+	 * @apiDescription Queries and returns a list of users
 	 * @apiUse Paging
 	 *
-	 * @apiSuccess {Array} charities Array of Charity objects
+	 * @apiSuccess {Array} users Array of User objects
 	 *
 	 * @apiUse Error
 	 */
-	server.post('/charities', function (req, res, next) {
+	server.post('/users', function (req, res, next) {
 
 		// Synchronously perform the following tasks...
 		Async.waterfall([
@@ -91,7 +91,7 @@ module.exports = function (server) {
 				callback();
 			},
 
-			// Find charity and add to request
+			// Find users and add to request
 			function (callback) {
 
 				// Setup query
