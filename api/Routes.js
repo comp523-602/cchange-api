@@ -23,6 +23,7 @@ module.exports = function (server) {
 	require('./routes/Campaign')(server);
 	require('./routes/Update')(server);
 	require('./routes/Post')(server);
+	require('./routes/Donation')(server);
 
 	// Middleware: Handle errors
 	server.use(function (err, req, res, next) {

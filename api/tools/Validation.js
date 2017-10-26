@@ -150,6 +150,20 @@ module.exports.string = function (name, input) {
 };
 
 /**
+ * Returns error with currency input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
+module.exports.currency = function (name, input) {
+	return getNamedErrorFromArray([
+		isInvalidNumber(input),
+		isInvalidSize(input, 0, 10000)
+	], name);
+};
+
+/**
  * Returns error with pageSize input
  * @memberof tools/Validation
  * @param {String} name Name of field

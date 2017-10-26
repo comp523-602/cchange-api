@@ -52,6 +52,12 @@ function PostProperties (schema) {
 			'type': String,
 		},
 
+		// Donations: donations made to post
+		'donations': {
+			'type': Array,
+			'default': [],
+		},
+
     });
 };
 
@@ -123,6 +129,40 @@ function PostStaticMethods (schema) {
 
 // Post Instance Methods: attaches functionality related to existing instances of the object
 function PostInstanceMethods (schema) {
+
+	/**
+	 * Adds a donation to the donation array
+	 * @memberof model/Post#
+	 * @param {Object} params
+	 * @param {Object} params.donation Donation object to be added
+	 * @param {function(err, post)} callback Callback function
+	 */
+	schema.methods.addDonation = function ({donation}, callback) {
+
+		// Save reference to model
+		var Post = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$push': {
+				'donations': donation.guid,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': Post.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, campaign) {
+			callback(err, campaign);
+		});
+	};
 
 	/**
 	 * Edits an existing post

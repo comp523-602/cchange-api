@@ -69,6 +69,12 @@ function CharityProperties (schema) {
 			'default': [],
 		},
 
+		// Donations: GUID of the donations made to this charity
+		'donations': {
+			'type': Array,
+			'default': [],
+		},
+
     });
 };
 
@@ -244,6 +250,40 @@ function CharityInstanceMethods (schema) {
 			'model': Charity.constructor,
 			'query': query,
 			'update': dbupdate,
+		}, function (err, charity) {
+			callback(err, charity);
+		});
+	};
+
+	/**
+	 * Adds a donation to the donation array
+	 * @memberof model/Charity#
+	 * @param {Object} params
+	 * @param {Object} params.donation Donation object to be added
+	 * @param {function(err, charity)} callback Callback function
+	 */
+	schema.methods.addDonation = function ({donation}, callback) {
+
+		// Save reference to model
+		var Charity = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$push': {
+				'donations': donation.guid,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': Charity.constructor,
+			'query': query,
+			'update': update,
 		}, function (err, charity) {
 			callback(err, charity);
 		});
