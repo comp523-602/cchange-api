@@ -57,6 +57,12 @@ function CampaignProperties (schema) {
 			'default': [],
 		},
 
+		// Posts: array of post GUIDs
+		'posts': {
+			'type': Array,
+			'default': [],
+		},
+
 		// Donations: array of updates made to campaign
 		'donations': {
 			'type': Array,
@@ -133,6 +139,40 @@ function CampaignStaticMethods (schema) {
 
 // Campaign Instance Methods: attaches functionality related to existing instances of the object
 function CampaignInstanceMethods (schema) {
+
+	/**
+	 * Adds a post to the posts array
+	 * @memberof model/Campaign#
+	 * @param {Object} params
+	 * @param {Object} params.post Post object to be added
+	 * @param {function(err, campaign)} callback Callback function
+	 */
+	schema.methods.addPost = function ({post}, callback) {
+
+		// Save reference to model
+		var Campaign = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$push': {
+				'posts': post.guid,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': Campaign.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, campaign) {
+			callback(err, campaign);
+		});
+	};
 
 	/**
 	 * Adds a donation to the donation array

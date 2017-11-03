@@ -8,6 +8,7 @@ const Validation = require('./../tools/Validation');
 const Secretary = require('./../tools/Secretary');
 const Messages = require('./../tools/Messages');
 const Dates = require('./../tools/Dates');
+const Imaging = require('./../tools/Imaging');
 
 // Initialize config
 const config = require('./../../config');
@@ -16,6 +17,7 @@ const config = require('./../../config');
 const Post = require('./../model/Post');
 const User = require('./../model/User');
 const Campaign = require('./../model/Campaign');
+const Charity = require('./../model/Charity');
 
 // Attach campaign endpoints to server
 module.exports = function (server) {
@@ -194,26 +196,62 @@ module.exports = function (server) {
 				})
 			},
 
-			// Create post, add to response
+			// Find charity with campaign
 			function (user, campaign, callback) {
+				Database.findOne({
+					'model': Charity,
+					'query': {
+						'guid': campaign.charity,
+					}
+				}, function (err, charity) {
+					if (!charity) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, user, campaign, charity);
+				})
+			},
+
+			// Get shareable image url
+			function (user, campaign, charity, callback) {
+				Imaging.createShareableImage({
+					'imageURL': req.body.image,
+					'logoURL': charity.logo,
+					'shareableText': campaign.name,
+				}, function (err, shareableImageURL) {
+					if (err) callback(Secretary.serverError(err));
+					else callback(null, user, campaign, charity, shareableImageURL);
+				})
+			},
+
+			// Create post, add to response
+			function (user, campaign, charity, shareableImageURL, callback) {
 				Post.create({
 					'user': user,
 					'campaign': campaign,
+					'charity': charity,
 					'image': req.body.image,
 					'caption': req.body.caption,
+					'shareableImage': shareableImageURL,
 				}, function (err, post) {
 					if (post) Secretary.addToResponse({
 						'response': res,
 						'key': "post",
 						'value': post.format()
 					});
-					callback(err, user, post);
+					callback(err, user, campaign, post);
 				});
 			},
 
 			// Add post to user
-			function (user, post, callback) {
+			function (user, campaign, post, callback) {
 				user.addPost({
+					'post': post
+				}, function (err) {
+					callback(err, campaign, post)
+				});
+			},
+
+			// Add post to campaign
+			function (campaign, post, callback) {
+				campaign.addPost({
 					'post': post
 				}, function (err) {
 					callback(err)

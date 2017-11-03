@@ -62,7 +62,7 @@ module.exports = {
 		'passwordIncorrect': "Incorrect password",
 		'charityTokenInvalid': "Your token is invalid",
 		'charityTokenUsed': "Your invitiation has already been used",
-		'charityTokenExpired': "Your invitation has expired",
+		'charityTokenExpired': "Your invitation has expired"
 	},
 
 	/**

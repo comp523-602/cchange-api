@@ -69,6 +69,7 @@ module.exports = {
 	 * @return {Object} Error object {code, message, handledError: true}
 	 */
 	serverError: function (message) {
+		if (message) return createError(Messages.codes.serverError, message);
 		return createError(Messages.codes.serverError, Messages.serverError);
 	},
 

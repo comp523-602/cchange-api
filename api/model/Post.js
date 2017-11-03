@@ -47,6 +47,12 @@ function PostProperties (schema) {
 			'required': true,
 		},
 
+		// Shareable Image: URL of the shareable post image
+		'shareableImage': {
+			'type': String,
+			'required': true,
+		},
+
 		// Caption: Caption for the post
 		'caption': {
 			'type': String,
@@ -72,9 +78,10 @@ function PostStaticMethods (schema) {
 	 * @param {Object} params.campaign Campaign object associated with post
 	 * @param {String} params.image Image URL
 	 * @param {String} params.caption Post caption
+	 * @param {String} params.shareableImage Shareable image URL
 	 * @param {function(err, post)} callback Callback function
 	 */
-	schema.statics.create = function ({user, campaign, image, caption}, callback) {
+	schema.statics.create = function ({user, campaign, charity, image, caption, shareableImage}, callback) {
 
 		// Save reference to model
 		var Post = this;
@@ -102,8 +109,9 @@ function PostStaticMethods (schema) {
 					'guid': GUID,
 					'user': user.guid,
 					'campaign': campaign.guid,
-					'charity': campaign.charity,
+					'charity': charity.guid,
 					'image': image,
+					'shareableImage': shareableImage,
 					'dateCreated': Dates.now(),
 				};
 				if (caption) set.caption = caption;
