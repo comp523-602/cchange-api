@@ -146,7 +146,7 @@ module.exports = function (server) {
 	 * @apiDescription Creates a new donation for a charity, campaign or post
 	 * @apiUse Authorization
 	 *
-	 * @apiParam {Number} number Number of cents of donation
+	 * @apiParam {Number} amount Number of cents of donation
 	 * @apiParam {String} [post] GUID of post to make donation to (ignores campaign and charity)
 	 * @apiParam {String} [campaign] GUID of campaign to make donation to (ignores post and charity)
 	 * @apiParam {String} [charity] GUID of charity to make donation to (ignores campaign and post)
