@@ -273,8 +273,7 @@ module.exports = function (server) {
 	 * @apiUse Authorization
 	 *
 	 * @apiParam {String} post GUID of post to edit
-	 * @apiParam {String} [image] URL of post image
-	 * @apiParam {String} [caption] Post caption
+	 * @apiParam {String} caption Post caption
 	 *
 	 * @apiSuccess {Object} post Post object
 	 *
@@ -296,9 +295,8 @@ module.exports = function (server) {
 			function (token, callback) {
 				var fields = [
 					Validation.string('Post ID (post)', req.body.post),
+					Validation.string('Caption', req.body.caption),
 				];
-				if (req.body.image) fields.push(Validation.imageUrl('Image', req.body.image));
-				if (req.body.caption) fields.push(Validation.string('Caption', req.body.caption));
 				callback(Validation.catchErrors(fields), token);
 			},
 
@@ -310,7 +308,7 @@ module.exports = function (server) {
 						'guid': req.body.post,
 					}
 				}, function (err, post) {
-					if (!update) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					if (!post) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
 					else callback(err, token, post);
 				})
 			},
@@ -319,10 +317,9 @@ module.exports = function (server) {
 			function (token, post, callback) {
 				post.edit({
 					'token': token,
-					'image': req.body.image,
 					'caption': req.body.caption,
 				}, function (err, post) {
-					if (update) Secretary.addToResponse({
+					if (post) Secretary.addToResponse({
 						'response': res,
 						'key': "post",
 						'value': post.format()

@@ -181,7 +181,7 @@ function PostInstanceMethods (schema) {
 	 * @param {String} [params.caption] Post caption
 	 * @param {function(err, post)} callback Callback function
 	 */
-	schema.methods.edit = function ({token, image, caption}, callback) {
+	schema.methods.edit = function ({token, caption}, callback) {
 
 		// Authenicate user
 		if (!authenticatedToken(this, token))
@@ -199,7 +199,6 @@ function PostInstanceMethods (schema) {
 		var set = {
 			'lastModified': Dates.now(),
 		};
-		if (image) set.image = image;
 		if (caption) set.caption = caption;
 		var update = {
 			'$set': set
