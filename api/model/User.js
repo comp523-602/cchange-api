@@ -182,6 +182,40 @@ function UserInstanceMethods (schema) {
 	};
 
 	/**
+	 * Removes a user from the followers array
+	 * @memberof model/User#
+	 * @param {Object} params
+	 * @param {Object} params.user User object to be removed
+	 * @param {function(err, user)} callback Callback function
+	 */
+	schema.methods.removeFollower = function ({user}, callback) {
+
+		// Save reference to model
+		var User = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$pull': {
+				'followers': user.guid,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': User.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, user) {
+			callback(err, user);
+		});
+	};
+
+	/**
 	 * Adds a user to the followingUsers array
 	 * @memberof model/User#
 	 * @param {Object} params
@@ -216,6 +250,40 @@ function UserInstanceMethods (schema) {
 	};
 
 	/**
+	 * Removes a user from the followingUsers array
+	 * @memberof model/User#
+	 * @param {Object} params
+	 * @param {Object} params.user User object to be removed
+	 * @param {function(err, user)} callback Callback function
+	 */
+	schema.methods.removeFollowingUser = function ({user}, callback) {
+
+		// Save reference to model
+		var User = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$pull': {
+				'followingUsers': user.guid,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': User.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, user) {
+			callback(err, user);
+		});
+	};
+
+	/**
 	 * Adds a charity to the followingCharities array
 	 * @memberof model/User#
 	 * @param {Object} params
@@ -235,6 +303,40 @@ function UserInstanceMethods (schema) {
 		// Setup database update
 		var update = {
 			'$push': {
+				'followingCharities': charity,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': User.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, user) {
+			callback(err, user);
+		});
+	};
+
+	/**
+	 * Removes a charity from the followingCharities array
+	 * @memberof model/User#
+	 * @param {Object} params
+	 * @param {Object} params.charity Charity object to be remove
+	 * @param {function(err, user)} callback Callback function
+	 */
+	schema.methods.removeFollowingCharity = function ({charity}, callback) {
+
+		// Save reference to model
+		var User = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$pull': {
 				'followingCharities': charity,
 			}
 		};
