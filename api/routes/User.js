@@ -503,4 +503,280 @@ module.exports = function (server) {
 			else Secretary.success(res);
 		});
 	})
+
+	/**
+	 * @memberof apiDocs
+	 * @api {POST} /user.followUser Follow User
+	 * @apiName Follow User
+	 * @apiGroup User
+	 * @apiDescription Allows an authorized user to follow another user
+	 *
+	 * @apiParam {String} user User to follow's GUID
+	 *
+	 * @apiSuccess {Object} user User object
+	 *
+	 * @apiUse Error
+	 */
+	server.post('/user.followUser', function (req, res, next) {
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			function (callback) {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Validate fields
+			function (token, callback) {
+				var fields = [];
+				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
+				if (req.body.bio) fields.push(Validation.string('Bio', req.body.bio));
+				if (req.body.picture) fields.push(Validation.imageUrl('Picture', req.body.picture));
+				callback(Validation.catchErrors(fields), token);
+			},
+
+			// Find user using token
+			function (token, callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user,
+					},
+				}, function (err, user) {
+					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, user);
+				});
+			},
+
+			// Update user, add to reply
+			function (user, callback) {
+				user.edit({
+					'name': req.body.name,
+					'bio': req.body.bio,
+					'picture': req.body.picture,
+				}, function (err, user) {
+					if (user) Secretary.addToResponse({
+						'response': res,
+						'key': "user",
+						'value': user.format(),
+					});
+					callback(err, user);
+				});
+			},
+
+		], function (err) {
+			if (err) next(err);
+			else Secretary.success(res);
+		});
+	})
+
+	/**
+	 * @memberof apiDocs
+	 * @api {POST} /user.followCharity Follow Charity
+	 * @apiName Follow Charity
+	 * @apiGroup User
+	 * @apiDescription Allows an authorized user to follow a charity
+	 *
+	 * @apiParam {String} charity Charity to follow's GUID
+	 *
+	 * @apiSuccess {Object} user User object
+	 *
+	 * @apiUse Error
+	 */
+	server.post('/user.followCharity', function (req, res, next) {
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			function (callback) {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Validate fields
+			function (token, callback) {
+				var fields = [];
+				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
+				if (req.body.bio) fields.push(Validation.string('Bio', req.body.bio));
+				if (req.body.picture) fields.push(Validation.imageUrl('Picture', req.body.picture));
+				callback(Validation.catchErrors(fields), token);
+			},
+
+			// Find user using token
+			function (token, callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user,
+					},
+				}, function (err, user) {
+					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, user);
+				});
+			},
+
+			// Update user, add to reply
+			function (user, callback) {
+				user.edit({
+					'name': req.body.name,
+					'bio': req.body.bio,
+					'picture': req.body.picture,
+				}, function (err, user) {
+					if (user) Secretary.addToResponse({
+						'response': res,
+						'key': "user",
+						'value': user.format(),
+					});
+					callback(err, user);
+				});
+			},
+
+		], function (err) {
+			if (err) next(err);
+			else Secretary.success(res);
+		});
+	})
+
+	/**
+	 * @memberof apiDocs
+	 * @api {POST} /user.unfollowUser Unfollow User
+	 * @apiName Unfollow User
+	 * @apiGroup User
+	 * @apiDescription Allows an authorized user to unfollow a user
+	 *
+	 * @apiParam {String} user User to unfollow's GUID
+	 *
+	 * @apiSuccess {Object} user User object
+	 *
+	 * @apiUse Error
+	 */
+	server.post('/user.unfollowUser', function (req, res, next) {
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			function (callback) {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Validate fields
+			function (token, callback) {
+				var fields = [];
+				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
+				if (req.body.bio) fields.push(Validation.string('Bio', req.body.bio));
+				if (req.body.picture) fields.push(Validation.imageUrl('Picture', req.body.picture));
+				callback(Validation.catchErrors(fields), token);
+			},
+
+			// Find user using token
+			function (token, callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user,
+					},
+				}, function (err, user) {
+					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, user);
+				});
+			},
+
+			// Update user, add to reply
+			function (user, callback) {
+				user.edit({
+					'name': req.body.name,
+					'bio': req.body.bio,
+					'picture': req.body.picture,
+				}, function (err, user) {
+					if (user) Secretary.addToResponse({
+						'response': res,
+						'key': "user",
+						'value': user.format(),
+					});
+					callback(err, user);
+				});
+			},
+
+		], function (err) {
+			if (err) next(err);
+			else Secretary.success(res);
+		});
+	})
+
+	/**
+	 * @memberof apiDocs
+	 * @api {POST} /user.unfollowCharity Unfollow Charity
+	 * @apiName Unfollow Charity
+	 * @apiGroup User
+	 * @apiDescription Allows an authorized user to unfollow a charity
+	 *
+	 * @apiParam {String} charity Charity to unfollow's GUID
+	 *
+	 * @apiSuccess {Object} user User object
+	 *
+	 * @apiUse Error
+	 */
+	server.post('/user.unfollowCharity', function (req, res, next) {
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			function (callback) {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Validate fields
+			function (token, callback) {
+				var fields = [];
+				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
+				if (req.body.bio) fields.push(Validation.string('Bio', req.body.bio));
+				if (req.body.picture) fields.push(Validation.imageUrl('Picture', req.body.picture));
+				callback(Validation.catchErrors(fields), token);
+			},
+
+			// Find user using token
+			function (token, callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user,
+					},
+				}, function (err, user) {
+					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, user);
+				});
+			},
+
+			// Update user, add to reply
+			function (user, callback) {
+				user.edit({
+					'name': req.body.name,
+					'bio': req.body.bio,
+					'picture': req.body.picture,
+				}, function (err, user) {
+					if (user) Secretary.addToResponse({
+						'response': res,
+						'key': "user",
+						'value': user.format(),
+					});
+					callback(err, user);
+				});
+			},
+
+		], function (err) {
+			if (err) next(err);
+			else Secretary.success(res);
+		});
+	})
 };

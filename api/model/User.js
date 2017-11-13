@@ -59,7 +59,23 @@ function UserProperties (schema) {
 		'donations': {
 			'type': Array,
 			'default': []
-		}
+		},
+
+		// Following: entities which this user follows
+		'followingUsers': {
+			'type': Array,
+			'default': [],
+		},
+		'followingCharities': {
+			'type': Array,
+			'default': [],
+		},
+
+		// Followers
+		'followers': {
+			'type': Array,
+			'default': [],
+		},
 
     });
 };
@@ -132,6 +148,108 @@ function UserStaticMethods (schema) {
 function UserInstanceMethods (schema) {
 
 	/**
+	 * Adds a user to the followers array
+	 * @memberof model/User#
+	 * @param {Object} params
+	 * @param {Object} params.user User object to be added
+	 * @param {function(err, user)} callback Callback function
+	 */
+	schema.methods.addFollower = function ({user}, callback) {
+
+		// Save reference to model
+		var User = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$push': {
+				'followers': user.guid,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': User.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, user) {
+			callback(err, user);
+		});
+	};
+
+	/**
+	 * Adds a user to the followingUsers array
+	 * @memberof model/User#
+	 * @param {Object} params
+	 * @param {Object} params.user User object to be added
+	 * @param {function(err, user)} callback Callback function
+	 */
+	schema.methods.addFollowingUser = function ({user}, callback) {
+
+		// Save reference to model
+		var User = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$push': {
+				'followingUsers': user.guid,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': User.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, user) {
+			callback(err, user);
+		});
+	};
+
+	/**
+	 * Adds a charity to the followingCharities array
+	 * @memberof model/User#
+	 * @param {Object} params
+	 * @param {Object} params.charity Charity object to be added
+	 * @param {function(err, user)} callback Callback function
+	 */
+	schema.methods.addFollowingCharity = function ({charity}, callback) {
+
+		// Save reference to model
+		var User = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$push': {
+				'followingCharities': charity,
+			}
+		};
+
+		// Make database update
+		Database.update({
+			'model': User.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, user) {
+			callback(err, user);
+		});
+	};
+
+	/**
 	 * Adds a donation to the donation array
 	 * @memberof model/User#
 	 * @param {Object} params
@@ -160,8 +278,8 @@ function UserInstanceMethods (schema) {
 			'model': User.constructor,
 			'query': query,
 			'update': update,
-		}, function (err, campaign) {
-			callback(err, campaign);
+		}, function (err, user) {
+			callback(err, user);
 		});
 	};
 
