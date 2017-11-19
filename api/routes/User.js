@@ -636,7 +636,7 @@ module.exports = function (server) {
 					},
 				}, function (err, user) {
 					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
-					else callback(err, userToUnollow, user);
+					else callback(err, userToUnfollow, user);
 				});
 			},
 
@@ -708,7 +708,7 @@ module.exports = function (server) {
 			// Find user using token
 			function (token, charityToFollow, callback) {
 				Database.findOne({
-					'model': Charity,
+					'model': User,
 					'query': {
 						'guid': token.user,
 					},
@@ -799,7 +799,7 @@ module.exports = function (server) {
 			// Update user, add to reply
 			function (charityToUnfollow, user, callback) {
 				user.removeFollowingCharity({
-					'user': charityToUnfollow,
+					'charity': charityToUnfollow,
 				}, function (err, user) {
 					if (user) Secretary.addToResponse({
 						'response': res,

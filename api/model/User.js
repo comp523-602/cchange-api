@@ -162,7 +162,7 @@ function UserInstanceMethods (schema) {
 
 		// Setup database update
 		var update = {
-			'$push': {
+			'$addToSet': {
 				'followingUsers': user.guid,
 			}
 		};
@@ -230,8 +230,8 @@ function UserInstanceMethods (schema) {
 
 		// Setup database update
 		var update = {
-			'$push': {
-				'followingCharities': charity,
+			'$addToSet': {
+				'followingCharities': charity.guid,
 			}
 		};
 
@@ -265,7 +265,7 @@ function UserInstanceMethods (schema) {
 		// Setup database update
 		var update = {
 			'$pull': {
-				'followingCharities': charity,
+				'followingCharities': charity.guid,
 			}
 		};
 
