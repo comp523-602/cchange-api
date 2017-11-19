@@ -200,7 +200,8 @@ module.exports = function (server) {
 					Secretary.addToResponse({
 						'response': res,
 						'key': "token",
-						'value': token
+						'value': token,
+						'noFormat': true,
 					})
 					callback(err);
 				});

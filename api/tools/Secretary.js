@@ -87,9 +87,14 @@ module.exports = {
 	 * @param {String} param.key Key to attach value with
 	 * @param {Object} params.value Object, string, array, etc. to attach
 	 */
-	addToResponse: function ({response, key, value}) {
-		if (!response.objectsToFormat) response.objectsToFormat = {};
-		response.objectsToFormat[key] = value;
+	addToResponse: function ({response, key, value, noFormat}) {
+		if (noFormat) {
+			if (!response.body) response.body = {};
+			response.body[key] = value;
+		} else {
+			if (!response.objectsToFormat) response.objectsToFormat = {};
+			response.objectsToFormat[key] = value;
+		}
 	},
 
 	/**
