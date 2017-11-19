@@ -64,16 +64,12 @@ function UserProperties (schema) {
 		// Following: entities which this user follows
 		'followingUsers': {
 			'type': Array,
+			'index': true,
 			'default': [],
 		},
 		'followingCharities': {
 			'type': Array,
-			'default': [],
-		},
-
-		// Followers
-		'followers': {
-			'type': Array,
+			'index': true,
 			'default': [],
 		},
 
@@ -146,74 +142,6 @@ function UserStaticMethods (schema) {
 
 // User Instance Methods: attaches functionality related to existing instances of the object
 function UserInstanceMethods (schema) {
-
-	/**
-	 * Adds a user to the followers array
-	 * @memberof model/User#
-	 * @param {Object} params
-	 * @param {Object} params.user User object to be added
-	 * @param {function(err, user)} callback Callback function
-	 */
-	schema.methods.addFollower = function ({user}, callback) {
-
-		// Save reference to model
-		var User = this;
-
-		// Setup query with GUID
-		var query = {
-			'guid': this.guid,
-		};
-
-		// Setup database update
-		var update = {
-			'$push': {
-				'followers': user.guid,
-			}
-		};
-
-		// Make database update
-		Database.update({
-			'model': User.constructor,
-			'query': query,
-			'update': update,
-		}, function (err, user) {
-			callback(err, user);
-		});
-	};
-
-	/**
-	 * Removes a user from the followers array
-	 * @memberof model/User#
-	 * @param {Object} params
-	 * @param {Object} params.user User object to be removed
-	 * @param {function(err, user)} callback Callback function
-	 */
-	schema.methods.removeFollower = function ({user}, callback) {
-
-		// Save reference to model
-		var User = this;
-
-		// Setup query with GUID
-		var query = {
-			'guid': this.guid,
-		};
-
-		// Setup database update
-		var update = {
-			'$pull': {
-				'followers': user.guid,
-			}
-		};
-
-		// Make database update
-		Database.update({
-			'model': User.constructor,
-			'query': query,
-			'update': update,
-		}, function (err, user) {
-			callback(err, user);
-		});
-	};
 
 	/**
 	 * Adds a user to the followingUsers array

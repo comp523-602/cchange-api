@@ -75,12 +75,6 @@ function CharityProperties (schema) {
 			'default': [],
 		},
 
-		// Followers
-		'followers': {
-			'type': Array,
-			'default': [],
-		},
-
     });
 };
 
@@ -170,78 +164,6 @@ function CharityInstanceMethods (schema) {
 		var update = {
 			'$push': {
 				'users': user.guid,
-			}
-		};
-
-		// Make database update
-		Database.update({
-			'model': Charity.constructor,
-			'query': query,
-			'update': update,
-		}, function (err, charity) {
-			callback(err, charity);
-		});
-	};
-
-	/**
-	 * Adds a user to the followers array
-	 * @memberof model/Charity#
-	 * @param {Object} params
-	 * @param {Object} params.user User object to be added
-	 * @param {function(err, charity)} callback Callback function
-	 */
-	schema.methods.addFollower = function ({user}, callback) {
-
-		// Note: doesn't require authorization (addUser called after create)
-
-		// Save reference to model
-		var Charity = this;
-
-		// Setup query with GUID
-		var query = {
-			'guid': this.guid,
-		};
-
-		// Setup database update
-		var update = {
-			'$push': {
-				'followers': user.guid,
-			}
-		};
-
-		// Make database update
-		Database.update({
-			'model': Charity.constructor,
-			'query': query,
-			'update': update,
-		}, function (err, charity) {
-			callback(err, charity);
-		});
-	};
-
-	/**
-	 * Removes a user from the followers array
-	 * @memberof model/Charity#
-	 * @param {Object} params
-	 * @param {Object} params.user User object to be removed
-	 * @param {function(err, charity)} callback Callback function
-	 */
-	schema.methods.removeFollower = function ({user}, callback) {
-
-		// Note: doesn't require authorization (addUser called after create)
-
-		// Save reference to model
-		var Charity = this;
-
-		// Setup query with GUID
-		var query = {
-			'guid': this.guid,
-		};
-
-		// Setup database update
-		var update = {
-			'$pull': {
-				'followers': user.guid,
 			}
 		};
 

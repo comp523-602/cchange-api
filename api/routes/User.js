@@ -531,15 +531,26 @@ module.exports = function (server) {
 
 			// Validate fields
 			function (token, callback) {
-				var fields = [];
-				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
-				if (req.body.bio) fields.push(Validation.string('Bio', req.body.bio));
-				if (req.body.picture) fields.push(Validation.imageUrl('Picture', req.body.picture));
-				callback(Validation.catchErrors(fields), token);
+				callback(Validation.catchErrors([
+					Validation.string('User ID (user)', req.body.user)
+				]), token);
+			},
+
+			// Find user to follow using token
+			function (token, callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': req.body.user,
+					},
+				}, function (err, userToFollow) {
+					if (!userToFollow) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, token, userToFollow);
+				});
 			},
 
 			// Find user using token
-			function (token, callback) {
+			function (token, userToFollow, callback) {
 				Database.findOne({
 					'model': User,
 					'query': {
@@ -547,92 +558,21 @@ module.exports = function (server) {
 					},
 				}, function (err, user) {
 					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
-					else callback(err, user);
+					else callback(err, userToFollow, user);
 				});
 			},
 
 			// Update user, add to reply
-			function (user, callback) {
-				user.edit({
-					'name': req.body.name,
-					'bio': req.body.bio,
-					'picture': req.body.picture,
+			function (userToFollow, user, callback) {
+				user.addFollowingUser({
+					'user': userToFollow,
 				}, function (err, user) {
 					if (user) Secretary.addToResponse({
 						'response': res,
 						'key': "user",
 						'value': user.format(),
 					});
-					callback(err, user);
-				});
-			},
-
-		], function (err) {
-			if (err) next(err);
-			else Secretary.success(res);
-		});
-	})
-
-	/**
-	 * @memberof apiDocs
-	 * @api {POST} /user.followCharity Follow Charity
-	 * @apiName Follow Charity
-	 * @apiGroup User
-	 * @apiDescription Allows an authorized user to follow a charity
-	 *
-	 * @apiParam {String} charity Charity to follow's GUID
-	 *
-	 * @apiSuccess {Object} user User object
-	 *
-	 * @apiUse Error
-	 */
-	server.post('/user.followCharity', function (req, res, next) {
-
-		// Synchronously perform the following tasks...
-		Async.waterfall([
-
-			// Authenticate user
-			function (callback) {
-				Authentication.authenticateUser(req, function (err, token) {
-					callback(err, token);
-				});
-			},
-
-			// Validate fields
-			function (token, callback) {
-				var fields = [];
-				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
-				if (req.body.bio) fields.push(Validation.string('Bio', req.body.bio));
-				if (req.body.picture) fields.push(Validation.imageUrl('Picture', req.body.picture));
-				callback(Validation.catchErrors(fields), token);
-			},
-
-			// Find user using token
-			function (token, callback) {
-				Database.findOne({
-					'model': User,
-					'query': {
-						'guid': token.user,
-					},
-				}, function (err, user) {
-					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
-					else callback(err, user);
-				});
-			},
-
-			// Update user, add to reply
-			function (user, callback) {
-				user.edit({
-					'name': req.body.name,
-					'bio': req.body.bio,
-					'picture': req.body.picture,
-				}, function (err, user) {
-					if (user) Secretary.addToResponse({
-						'response': res,
-						'key': "user",
-						'value': user.format(),
-					});
-					callback(err, user);
+					callback(err);
 				});
 			},
 
@@ -669,15 +609,26 @@ module.exports = function (server) {
 
 			// Validate fields
 			function (token, callback) {
-				var fields = [];
-				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
-				if (req.body.bio) fields.push(Validation.string('Bio', req.body.bio));
-				if (req.body.picture) fields.push(Validation.imageUrl('Picture', req.body.picture));
-				callback(Validation.catchErrors(fields), token);
+				callback(Validation.catchErrors([
+					Validation.string('User ID (user)', req.body.user)
+				]), token);
+			},
+
+			// Find user to follow using token
+			function (token, callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': req.body.user,
+					},
+				}, function (err, userToUnfollow) {
+					if (!userToUnfollow) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, token, userToUnfollow);
+				});
 			},
 
 			// Find user using token
-			function (token, callback) {
+			function (token, userToUnfollow, callback) {
 				Database.findOne({
 					'model': User,
 					'query': {
@@ -685,23 +636,99 @@ module.exports = function (server) {
 					},
 				}, function (err, user) {
 					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
-					else callback(err, user);
+					else callback(err, userToUnollow, user);
 				});
 			},
 
 			// Update user, add to reply
-			function (user, callback) {
-				user.edit({
-					'name': req.body.name,
-					'bio': req.body.bio,
-					'picture': req.body.picture,
+			function (userToUnfollow, user, callback) {
+				user.removeFollowingUser({
+					'user': userToUnfollow,
 				}, function (err, user) {
 					if (user) Secretary.addToResponse({
 						'response': res,
 						'key': "user",
 						'value': user.format(),
 					});
-					callback(err, user);
+					callback(err);
+				});
+			},
+
+		], function (err) {
+			if (err) next(err);
+			else Secretary.success(res);
+		});
+	})
+
+	/**
+	 * @memberof apiDocs
+	 * @api {POST} /user.followCharity Follow Charity
+	 * @apiName Follow Charity
+	 * @apiGroup User
+	 * @apiDescription Allows an authorized user to follow a charity
+	 *
+	 * @apiParam {String} charity Charity to follow's GUID
+	 *
+	 * @apiSuccess {Object} user User object
+	 *
+	 * @apiUse Error
+	 */
+	server.post('/user.followCharity', function (req, res, next) {
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			function (callback) {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Validate fields
+			function (token, callback) {
+				callback(Validation.catchErrors([
+					Validation.string('Charity ID (charity)', req.body.charity)
+				]), token);
+			},
+
+			// Find charity to follow using token
+			function (token, callback) {
+				Database.findOne({
+					'model': Charity,
+					'query': {
+						'guid': req.body.charity,
+					},
+				}, function (err, charityToFollow) {
+					if (!charityToFollow) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, token, charityToFollow);
+				});
+			},
+
+			// Find user using token
+			function (token, charityToFollow, callback) {
+				Database.findOne({
+					'model': Charity,
+					'query': {
+						'guid': token.user,
+					},
+				}, function (err, user) {
+					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, charityToFollow, user);
+				});
+			},
+
+			// Update user, add to reply
+			function (charityToFollow, user, callback) {
+				user.addFollowingCharity({
+					'charity': charityToFollow,
+				}, function (err, user) {
+					if (user) Secretary.addToResponse({
+						'response': res,
+						'key': "user",
+						'value': user.format(),
+					});
+					callback(err);
 				});
 			},
 
@@ -738,15 +765,26 @@ module.exports = function (server) {
 
 			// Validate fields
 			function (token, callback) {
-				var fields = [];
-				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
-				if (req.body.bio) fields.push(Validation.string('Bio', req.body.bio));
-				if (req.body.picture) fields.push(Validation.imageUrl('Picture', req.body.picture));
-				callback(Validation.catchErrors(fields), token);
+				callback(Validation.catchErrors([
+					Validation.string('Charity ID (charity)', req.body.charity)
+				]), token);
+			},
+
+			// Find user to follow using token
+			function (token, callback) {
+				Database.findOne({
+					'model': Charity,
+					'query': {
+						'guid': req.body.charity,
+					},
+				}, function (err, charityToUnfollow) {
+					if (!charityToUnfollow) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, token, charityToUnfollow);
+				});
 			},
 
 			// Find user using token
-			function (token, callback) {
+			function (token, charityToUnfollow, callback) {
 				Database.findOne({
 					'model': User,
 					'query': {
@@ -754,23 +792,21 @@ module.exports = function (server) {
 					},
 				}, function (err, user) {
 					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
-					else callback(err, user);
+					else callback(err, charityToUnfollow, user);
 				});
 			},
 
 			// Update user, add to reply
-			function (user, callback) {
-				user.edit({
-					'name': req.body.name,
-					'bio': req.body.bio,
-					'picture': req.body.picture,
+			function (charityToUnfollow, user, callback) {
+				user.removeFollowingCharity({
+					'user': charityToUnfollow,
 				}, function (err, user) {
 					if (user) Secretary.addToResponse({
 						'response': res,
 						'key': "user",
 						'value': user.format(),
 					});
-					callback(err, user);
+					callback(err);
 				});
 			},
 
@@ -779,4 +815,5 @@ module.exports = function (server) {
 			else Secretary.success(res);
 		});
 	})
+
 };
