@@ -14,6 +14,12 @@ const config = require('./../../config');
 function CharityTokenProperties (schema) {
     schema.add({
 
+		// OBJECT TYPE
+		'objectType': {
+			'type': String,
+			'default': "charityToken"
+		},
+
 		// Token: token used for validation
 		'token': {
 			'type': String,
@@ -120,6 +126,19 @@ function CharityTokenStaticMethods (schema) {
 
 // Charity Token Instance Methods: attaches functionality related to existing instances of the object
 function CharityTokenInstanceMethods (schema) {
+
+	/**
+	 * Formats a campaign object to be returned to the client
+	 * @memberof model/CharityToken#
+	 * @param {Object} params
+	 * @param {Object} params.req Express.js request object
+	 * @param {Object} params.res Express.js response object
+	 * @param {function(err, formattedObject)} callback Callback function
+	 */
+	schema.methods.format = function ({req, res}, callback) {
+		var formattedObject = this.toObject();
+		callback(null, formattedObject);
+	};
 
 	/**
 	 * Marks a charity token as used

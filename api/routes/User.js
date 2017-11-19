@@ -57,7 +57,7 @@ module.exports = function (server) {
 					Secretary.addToResponse({
 						'response': res,
 						'key': "user",
-						'value': user.format(),
+						'value': user,
 					});
 					callback(err);
 				})
@@ -65,7 +65,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 
@@ -114,7 +114,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 
@@ -166,7 +166,7 @@ module.exports = function (server) {
 					Secretary.addToResponse({
 						'response': res,
 						'key': "user",
-						'value': user.format(),
+						'value': user,
 					});
 				} else {
 					callback(Secretary.conflictError(Messages.conflictErrors.passwordIncorrect));
@@ -185,7 +185,7 @@ module.exports = function (server) {
 						if (charity) Secretary.addToResponse({
 							'response': res,
 							'key': "charity",
-							'value': charity.format()
+							'value': charity
 						});
 						callback(err, user);
 					});
@@ -208,7 +208,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 
@@ -268,7 +268,7 @@ module.exports = function (server) {
 					if (user) Secretary.addToResponse({
 						'response': res,
 						'key': "user",
-						'value': user.format(),
+						'value': user,
 					});
 					callback(err, user);
 				});
@@ -288,7 +288,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		});
 	})
 
@@ -386,7 +386,7 @@ module.exports = function (server) {
 					if (user) Secretary.addToResponse({
 						'response': res,
 						'key': "user",
-						'value': user.format(),
+						'value': user,
 					});
 					callback(err, charityToken, charity, user);
 				});
@@ -400,7 +400,7 @@ module.exports = function (server) {
 					if (charity) Secretary.addToResponse({
 						'response': res,
 						'key': "charity",
-						'value': charity.format(),
+						'value': charity,
 					});
 					callback(err, charityToken, user);
 				});
@@ -429,7 +429,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		});
 	})
 
@@ -492,7 +492,7 @@ module.exports = function (server) {
 					if (user) Secretary.addToResponse({
 						'response': res,
 						'key': "user",
-						'value': user.format(),
+						'value': user,
 					});
 					callback(err, user);
 				});
@@ -500,7 +500,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		});
 	})
 
@@ -514,6 +514,7 @@ module.exports = function (server) {
 	 * @apiParam {String} user User to follow's GUID
 	 *
 	 * @apiSuccess {Object} user User object
+	 * @apiSuccess {Object} profileUser Followed user object
 	 *
 	 * @apiUse Error
 	 */
@@ -570,7 +571,12 @@ module.exports = function (server) {
 					if (user) Secretary.addToResponse({
 						'response': res,
 						'key': "user",
-						'value': user.format(),
+						'value': user,
+					});
+					Secretary.addToResponse({
+						'response': res,
+						'key': "profileUser",
+						'value': userToFollow,
 					});
 					callback(err);
 				});
@@ -578,7 +584,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		});
 	})
 
@@ -592,6 +598,7 @@ module.exports = function (server) {
 	 * @apiParam {String} user User to unfollow's GUID
 	 *
 	 * @apiSuccess {Object} user User object
+	 * @apiSuccess {Object} profileUser Unfollowed user object
 	 *
 	 * @apiUse Error
 	 */
@@ -648,7 +655,12 @@ module.exports = function (server) {
 					if (user) Secretary.addToResponse({
 						'response': res,
 						'key': "user",
-						'value': user.format(),
+						'value': user,
+					});
+					Secretary.addToResponse({
+						'response': res,
+						'key': "profileUser",
+						'value': userToUnfollow,
 					});
 					callback(err);
 				});
@@ -656,7 +668,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		});
 	})
 
@@ -670,6 +682,7 @@ module.exports = function (server) {
 	 * @apiParam {String} charity Charity to follow's GUID
 	 *
 	 * @apiSuccess {Object} user User object
+	 * @apiSuccess {Object} charity Followed charity object
 	 *
 	 * @apiUse Error
 	 */
@@ -726,7 +739,12 @@ module.exports = function (server) {
 					if (user) Secretary.addToResponse({
 						'response': res,
 						'key': "user",
-						'value': user.format(),
+						'value': user,
+					});
+					Secretary.addToResponse({
+						'response': res,
+						'key': "charity",
+						'value': charityToFollow,
 					});
 					callback(err);
 				});
@@ -734,7 +752,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		});
 	})
 
@@ -748,6 +766,7 @@ module.exports = function (server) {
 	 * @apiParam {String} charity Charity to unfollow's GUID
 	 *
 	 * @apiSuccess {Object} user User object
+	 * @apiSuccess {Object} charity Unfollowed charity object
 	 *
 	 * @apiUse Error
 	 */
@@ -804,7 +823,12 @@ module.exports = function (server) {
 					if (user) Secretary.addToResponse({
 						'response': res,
 						'key': "user",
-						'value': user.format(),
+						'value': user,
+					});
+					Secretary.addToResponse({
+						'response': res,
+						'key': "charity",
+						'value': charityToUnfollow,
 					});
 					callback(err);
 				});
@@ -812,7 +836,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		});
 	})
 

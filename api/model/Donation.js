@@ -14,6 +14,12 @@ const config = require('./../../config');
 function DonationProperties (schema) {
     schema.add({
 
+		// OBJECT TYPE
+		'objectType': {
+			'type': String,
+			'default': "donation"
+		},
+
 		// Charity: GUID of the charity this donation is made to
 		'charity': {
 			'type': String,
@@ -114,6 +120,23 @@ function DonationStaticMethods (schema) {
 	};
 };
 
+function DonationInstanceMethods (schema) {
+
+	/**
+	 * Formats a campaign object to be returned to the client
+	 * @memberof model/Donation#
+	 * @param {Object} params
+	 * @param {Object} params.req Express.js request object
+	 * @param {Object} params.res Express.js response object
+	 * @param {function(err, formattedObject)} callback Callback function
+	 */
+	schema.methods.format = function ({req, res}, callback) {
+		var formattedObject = this.toObject();
+		callback(null, formattedObject);
+	};
+
+};
+
 // Export update model object
 module.exports = function () {
 
@@ -126,6 +149,7 @@ module.exports = function () {
 	// Add donation properties and methods to schema
 	DonationProperties(donationSchema);
 	DonationStaticMethods(donationSchema);
+	DonationInstanceMethods(donationSchema);
 
 	// Create new model object with schema
 	var donation = Mongoose.model('Donation', donationSchema);

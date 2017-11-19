@@ -60,7 +60,7 @@ module.exports = function (server) {
 					Secretary.addToResponse({
 						'response': res,
 						'key': "post",
-						'value': post.format(),
+						'value': post,
 					});
 					callback(err);
 				})
@@ -68,7 +68,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 
@@ -128,7 +128,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 
@@ -234,7 +234,7 @@ module.exports = function (server) {
 					if (post) Secretary.addToResponse({
 						'response': res,
 						'key': "post",
-						'value': post.format()
+						'value': post
 					});
 					callback(err, user, campaign, post);
 				});
@@ -260,7 +260,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 
@@ -322,7 +322,7 @@ module.exports = function (server) {
 					if (post) Secretary.addToResponse({
 						'response': res,
 						'key': "post",
-						'value': post.format()
+						'value': post
 					});
 					callback(err);
 				});
@@ -330,7 +330,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 };

@@ -26,6 +26,12 @@ function authenticatedToken (update, token) {
 function UpdateProperties (schema) {
     schema.add({
 
+		// OBJECT TYPE
+		'objectType': {
+			'type': String,
+			'default': "update"
+		},
+
 		// Charity: GUID of the charity this update belongs to
 		'charity': {
 			'type': String,
@@ -113,6 +119,19 @@ function UpdateStaticMethods (schema) {
 
 // Update Instance Methods: attaches functionality related to existing instances of the object
 function UpdateInstanceMethods (schema) {
+
+	/**
+	 * Formats a campaign object to be returned to the client
+	 * @memberof model/Update#
+	 * @param {Object} params
+	 * @param {Object} params.req Express.js request object
+	 * @param {Object} params.res Express.js response object
+	 * @param {function(err, formattedObject)} callback Callback function
+	 */
+	schema.methods.format = function ({req, res}, callback) {
+		var formattedObject = this.toObject();
+		callback(null, formattedObject);
+	};
 
 	/**
 	 * Edits an exiting update

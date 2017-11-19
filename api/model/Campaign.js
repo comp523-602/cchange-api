@@ -26,6 +26,12 @@ function authenticatedToken (campaign, token) {
 function CampaignProperties (schema) {
     schema.add({
 
+		// OBJECT TYPE
+		'objectType': {
+			'type': String,
+			'default': "campaign"
+		},
+
 		// Charity: GUID of the charity this campaign belongs to
 		'charity': {
 			'type': String,
@@ -139,6 +145,19 @@ function CampaignStaticMethods (schema) {
 
 // Campaign Instance Methods: attaches functionality related to existing instances of the object
 function CampaignInstanceMethods (schema) {
+
+	/**
+	 * Formats a campaign object to be returned to the client
+	 * @memberof model/Campaign#
+	 * @param {Object} params
+	 * @param {Object} params.req Express.js request object
+	 * @param {Object} params.res Express.js response object
+	 * @param {function(err, formattedObject)} callback Callback function
+	 */
+	schema.methods.format = function ({req, res}, callback) {
+		var formattedObject = this.toObject();
+		callback(null, formattedObject);
+	};
 
 	/**
 	 * Adds a post to the posts array

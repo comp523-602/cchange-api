@@ -5,7 +5,10 @@ const Mongoose = require('mongoose');
 const Async = require('async');
 const Tokens = require('jsonwebtoken');
 const Database = require('./../tools/Database');
+const Authentication = require('./../tools/Authentication');
 const Dates = require('./../tools/Dates');
+
+const User = require('./User.js');
 
 // Initialize config
 const config = require('./../../config');
@@ -25,6 +28,12 @@ function authenticatedToken (charity, token) {
 // Charity Properties: configures properties for database object
 function CharityProperties (schema) {
     schema.add({
+
+		// OBJECT TYPE
+		'objectType': {
+			'type': String,
+			'default': "charity"
+		},
 
 		// Name: name of charity
 		'name': {
@@ -140,6 +149,57 @@ function CharityStaticMethods (schema) {
 
 // Charity Instance Methods: attaches functionality related to existing instances of the object
 function CharityInstanceMethods (schema) {
+
+	/**
+	 * Formats a campaign object to be returned to the client
+	 * @memberof model/Charity#
+	 * @param {Object} params
+	 * @param {Object} params.req Express.js request object
+	 * @param {Object} params.res Express.js response object
+	 * @param {function(err, formattedObject)} callback Callback function
+	 */
+	schema.methods.format = function ({req, res}, callback) {
+
+		// Initialize formatted object
+		var formattedObject = this.toObject();
+
+		Async.waterfall([
+
+			// Get request authorization
+			function (callback) {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(null, token);
+				});
+			},
+
+			// Attach currentUserFollows boolean
+			function (token, callback) {
+				if (token) {
+					formattedObject.currentUserFollows = false;
+					Database.findOne({
+						'model': User,
+						'query': {
+							'guid': token.user,
+						}
+					}, function (err, user) {
+						if (user) {
+							for (var i in user.followingCharities) {
+								if (user.followingCharities[i] == formattedObject.guid) {
+									formattedObject.currentUserFollows = true; break;
+								}
+							}
+						}
+						callback();
+					});
+				} else {
+					callback();
+				}
+			},
+
+		], function (err) {
+			callback(err, formattedObject);
+		})
+	};
 
 	/**
 	 * Adds a user to the users array

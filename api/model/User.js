@@ -10,6 +10,12 @@ const Dates = require('./../tools/Dates');
 function UserProperties (schema) {
     schema.add({
 
+		// OBJECT TYPE
+		'objectType': {
+			'type': String,
+			'default': "user"
+		},
+
 		// Email: the user's email (used for user uniqueness)
 		'email': {
 			'type': String,
@@ -142,6 +148,19 @@ function UserStaticMethods (schema) {
 
 // User Instance Methods: attaches functionality related to existing instances of the object
 function UserInstanceMethods (schema) {
+
+	/**
+	 * Formats a campaign object to be returned to the client
+	 * @memberof model/User#
+	 * @param {Object} params
+	 * @param {Object} params.req Express.js request object
+	 * @param {Object} params.res Express.js response object
+	 * @param {function(err, formattedObject)} callback Callback function
+	 */
+	schema.methods.format = function ({req, res}, callback) {
+		var formattedObject = this.toObject();
+		callback(null, formattedObject);
+	};
 
 	/**
 	 * Adds a user to the followingUsers array

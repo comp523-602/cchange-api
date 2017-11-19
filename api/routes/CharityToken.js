@@ -56,7 +56,7 @@ module.exports = function (server) {
 					Secretary.addToResponse({
 						'response': res,
 						'key': "charityToken",
-						'value': charityToken.format(),
+						'value': charityToken,
 					});
 					callback(err, charityToken);
 				})
@@ -74,7 +74,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	});
 };

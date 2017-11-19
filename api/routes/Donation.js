@@ -63,7 +63,7 @@ module.exports = function (server) {
 					Secretary.addToResponse({
 						'response': res,
 						'key': "donation",
-						'value': donation.format(),
+						'value': donation,
 					});
 					callback(err);
 				})
@@ -71,7 +71,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 
@@ -134,7 +134,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 
@@ -261,7 +261,7 @@ module.exports = function (server) {
 					if (donation) Secretary.addToResponse({
 						'response': res,
 						'key': "donation",
-						'value': donation.format()
+						'value': donation
 					});
 					callback(err, user, post, campaign, charity, donation);
 				})
@@ -285,7 +285,7 @@ module.exports = function (server) {
 						if (post) Secretary.addToResponse({
 							'response': res,
 							'key': "post",
-							'value': post.format()
+							'value': post
 						});
 						callback(err, campaign, charity, donation);
 					});
@@ -303,7 +303,7 @@ module.exports = function (server) {
 						if (campaign) Secretary.addToResponse({
 							'response': res,
 							'key': "campaign",
-							'value': campaign.format()
+							'value': campaign
 						});
 						callback(err, charity, donation);
 					});
@@ -320,7 +320,7 @@ module.exports = function (server) {
 					if (charity) Secretary.addToResponse({
 						'response': res,
 						'key': "charity",
-						'value': charity.format()
+						'value': charity
 					});
 					callback(err);
 				});
@@ -328,7 +328,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 };

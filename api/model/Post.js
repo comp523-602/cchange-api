@@ -23,6 +23,12 @@ function authenticatedToken (post, token) {
 function PostProperties (schema) {
     schema.add({
 
+		// OBJECT TYPE
+		'objectType': {
+			'type': String,
+			'default': "post"
+		},
+
 		// User: GUID of the user this post belongs to
 		'user': {
 			'type': String,
@@ -137,6 +143,19 @@ function PostStaticMethods (schema) {
 
 // Post Instance Methods: attaches functionality related to existing instances of the object
 function PostInstanceMethods (schema) {
+
+	/**
+	 * Formats a campaign object to be returned to the client
+	 * @memberof model/Post#
+	 * @param {Object} params
+	 * @param {Object} params.req Express.js request object
+	 * @param {Object} params.res Express.js response object
+	 * @param {function(err, formattedObject)} callback Callback function
+	 */
+	schema.methods.format = function ({req, res}, callback) {
+		var formattedObject = this.toObject();
+		callback(null, formattedObject);
+	};
 
 	/**
 	 * Adds a donation to the donation array

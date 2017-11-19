@@ -2,19 +2,6 @@
 // Database.js: provides tools for accessing / updating the database
 
 /**
- * Formats an array of objects
- * @memberof tools/Database
- * @param {Array} objects Array of objects
- * @return {Array} Array of formatted objects
- */
-function formatObjects(objects) {
-	if (!objects) return;
-	var formatted = [];
-	for (var i in objects) formatted.push(objects[i].format());
-	return formatted;
-}
-
-/**
  * Finds a single object in the database using model
  * @memberof tools/Database
  * @param {Object} params
@@ -40,7 +27,7 @@ module.exports.findOne = function ({model, query}, callback) {
  */
 module.exports.page = function ({model, query, pageSize, sort}, callback) {
 	model.find(query).sort(sort).limit(pageSize).exec(function (err, objects) {
-		callback(err, formatObjects(objects));
+		callback(err, objects);
 	});
 };
 

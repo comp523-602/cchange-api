@@ -55,7 +55,7 @@ module.exports = function (server) {
 					Secretary.addToResponse({
 						'response': res,
 						'key': "charity",
-						'value': charity.format(),
+						'value': charity,
 					});
 					callback(err);
 				})
@@ -63,7 +63,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 
@@ -112,7 +112,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 
@@ -177,7 +177,7 @@ module.exports = function (server) {
 					if (charity) Secretary.addToResponse({
 						'response': res,
 						'key': "charity",
-						'value': charity.format(),
+						'value': charity,
 					});
 					callback(err);
 				});
@@ -185,7 +185,7 @@ module.exports = function (server) {
 
 		], function (err) {
 			if (err) next(err);
-			else Secretary.success(res);
+			else Secretary.respond(req, res);
 		})
 	})
 };
