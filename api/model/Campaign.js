@@ -7,6 +7,9 @@ const Tokens = require('jsonwebtoken');
 const Database = require('./../tools/Database');
 const Dates = require('./../tools/Dates');
 
+// Initialize external models
+const Charity = require('./Charity.js');
+
 // Initialize config
 const config = require('./../../config');
 
@@ -155,8 +158,32 @@ function CampaignInstanceMethods (schema) {
 	 * @param {function(err, formattedObject)} callback Callback function
 	 */
 	schema.methods.format = function ({req, res}, callback) {
-		var formattedObject = this.toObject();
-		callback(null, formattedObject);
+
+		// Initialize formatted object
+		var thisObject = this.toObject();
+
+		Async.waterfall([
+
+			// Attach charity metadata
+			function (callback) {
+				Database.findOne({
+					'model': Charity,
+					'query': {
+						'guid': thisObject.charity,
+					}
+				}, function (err, charity) {
+					if (charity) {
+						thisObject.charityName = charity.name;
+						thisObject.charityLogo = charity.logo;
+						thisObject.charityDescription = charity.description;
+					}
+					callback();
+				});
+			},
+
+		], function (err) {
+			callback(err, thisObject);
+		})
 	};
 
 	/**

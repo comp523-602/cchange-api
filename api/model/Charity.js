@@ -161,7 +161,7 @@ function CharityInstanceMethods (schema) {
 	schema.methods.format = function ({req, res}, callback) {
 
 		// Initialize formatted object
-		var formattedObject = this.toObject();
+		var thisObject = this.toObject();
 
 		Async.waterfall([
 
@@ -175,7 +175,7 @@ function CharityInstanceMethods (schema) {
 			// Attach currentUserFollows boolean
 			function (token, callback) {
 				if (token) {
-					formattedObject.currentUserFollows = false;
+					thisObject.currentUserFollows = false;
 					Database.findOne({
 						'model': User,
 						'query': {
@@ -184,8 +184,8 @@ function CharityInstanceMethods (schema) {
 					}, function (err, user) {
 						if (user) {
 							for (var i in user.followingCharities) {
-								if (user.followingCharities[i] == formattedObject.guid) {
-									formattedObject.currentUserFollows = true; break;
+								if (user.followingCharities[i] == thisObject.guid) {
+									thisObject.currentUserFollows = true; break;
 								}
 							}
 						}
@@ -196,8 +196,21 @@ function CharityInstanceMethods (schema) {
 				}
 			},
 
+			// Attach follower counts
+			function (callback) {
+				Database.find({
+					'model': User,
+					'query': {
+						'followingCharities': thisObject.guid,
+					},
+				}, function (err, objects) {
+					if (objects) thisObject.followers = objects.length;
+					callback();
+				})
+			},
+
 		], function (err) {
-			callback(err, formattedObject);
+			callback(err, thisObject);
 		})
 	};
 

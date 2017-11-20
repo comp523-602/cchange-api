@@ -7,6 +7,11 @@ const Tokens = require('jsonwebtoken');
 const Database = require('./../tools/Database');
 const Dates = require('./../tools/Dates');
 
+// Initialize external models
+const Charity = require('./Charity.js');
+const Campaign = require('./Campaign.js');
+const User = require('./User.js');
+
 /**
  * Checks if authenticated user can edit post
  * @memberof model/Post
@@ -153,8 +158,63 @@ function PostInstanceMethods (schema) {
 	 * @param {function(err, formattedObject)} callback Callback function
 	 */
 	schema.methods.format = function ({req, res}, callback) {
-		var formattedObject = this.toObject();
-		callback(null, formattedObject);
+
+		// Initialize formatted object
+		var thisObject = this.toObject();
+
+		Async.waterfall([
+
+			// Attach charity metadata
+			function (callback) {
+				Database.findOne({
+					'model': Charity,
+					'query': {
+						'guid': thisObject.charity,
+					}
+				}, function (err, charity) {
+					if (charity) {
+						thisObject.charityName = charity.name;
+						thisObject.charityLogo = charity.logo;
+						thisObject.charityDescription = charity.description;
+					}
+					callback();
+				});
+			},
+
+			// Attach campaign metadata
+			function (callback) {
+				Database.findOne({
+					'model': Campaign,
+					'query': {
+						'guid': thisObject.campaign,
+					}
+				}, function (err, campaign) {
+					if (campaign) {
+						thisObject.campaignName = campaign.name;
+						thisObject.campaignDescription = campaign.description;
+					}
+					callback();
+				});
+			},
+
+			// Attach user metadata
+			function (callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': thisObject.user,
+					}
+				}, function (err, user) {
+					if (user) {
+						thisObject.userName = user.name;
+					}
+					callback();
+				});
+			},
+
+		], function (err) {
+			callback(err, thisObject);
+		})
 	};
 
 	/**

@@ -5,6 +5,7 @@ const Mongoose = require('mongoose');
 const Async = require('async');
 const Database = require('./../tools/Database');
 const Dates = require('./../tools/Dates');
+const Authentication = require('./../tools/Authentication');
 
 // User Properties: configures properties for database object
 function UserProperties (schema) {
@@ -158,8 +159,62 @@ function UserInstanceMethods (schema) {
 	 * @param {function(err, formattedObject)} callback Callback function
 	 */
 	schema.methods.format = function ({req, res}, callback) {
-		var formattedObject = this.toObject();
-		callback(null, formattedObject);
+
+		// Reference object
+		var User = this.constructor;
+
+		// Initialize formatted object
+		var thisObject = this.toObject();
+
+		Async.waterfall([
+
+			// Get request authorization
+			function (callback) {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(null, token);
+				});
+			},
+
+			// Attach currentUserFollows boolean
+			function (token, callback) {
+				if (token && token.user != thisObject.guid) {
+					thisObject.currentUserFollows = false;
+					Database.findOne({
+						'model': User,
+						'query': {
+							'guid': token.user,
+						}
+					}, function (err, user) {
+						if (user) {
+							for (var i in user.followingUsers) {
+								if (user.followingUsers[i] == thisObject.guid) {
+									thisObject.currentUserFollows = true; break;
+								}
+							}
+						}
+						callback();
+					});
+				} else {
+					callback();
+				}
+			},
+
+			// Attach follower counts
+			function (callback) {
+				Database.find({
+					'model': User,
+					'query': {
+						'followingUsers': thisObject.guid,
+					},
+				}, function (err, objects) {
+					if (objects) thisObject.followers = objects.length;
+					callback();
+				})
+			},
+
+		], function (err) {
+			callback(err, thisObject);
+		})
 	};
 
 	/**

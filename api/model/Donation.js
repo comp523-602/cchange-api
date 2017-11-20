@@ -7,6 +7,12 @@ const Tokens = require('jsonwebtoken');
 const Database = require('./../tools/Database');
 const Dates = require('./../tools/Dates');
 
+// Initialize external models
+const Charity = require('./Charity.js');
+const Campaign = require('./Campaign.js');
+const User = require('./User.js');
+const Post = require('./Post.js');
+
 // Initialize config
 const config = require('./../../config');
 
@@ -131,8 +137,100 @@ function DonationInstanceMethods (schema) {
 	 * @param {function(err, formattedObject)} callback Callback function
 	 */
 	schema.methods.format = function ({req, res}, callback) {
-		var formattedObject = this.toObject();
-		callback(null, formattedObject);
+
+		// Initialize formatted object
+		var thisObject = this.toObject();
+
+		Async.waterfall([
+
+			// Attach user metadata
+			function (callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': thisObject.user,
+					}
+				}, function (err, user) {
+					if (user) {
+						thisObject.donatingUserName = user.name;
+					}
+					callback();
+				});
+			},
+
+			// Attach charity metadata
+			function (callback) {
+				Database.findOne({
+					'model': Charity,
+					'query': {
+						'guid': thisObject.charity,
+					}
+				}, function (err, charity) {
+					if (charity) {
+						thisObject.charityName = charity.name;
+					}
+					callback();
+				});
+			},
+
+			// Attach charity metadata
+			function (callback) {
+				if (thisObject.campaign) {
+					Database.findOne({
+						'model': Campaign,
+						'query': {
+							'guid': thisObject.campaign,
+						}
+					}, function (err, campaign) {
+						if (campaign) {
+							thisObject.campaignName = campaign.name;
+						}
+						callback();
+					});
+				} else {
+					callback();
+				}
+			},
+
+			// Get post
+			function (callback) {
+				if (thisObject.post) {
+					Database.findOne({
+						'model': Post,
+						'query': {
+							'guid': thisObject.post,
+						}
+					}, function (err, post) {
+						if (post) callback(null, post);
+						else callback(null, null);
+					});
+				} else {
+					callback(null, null);
+				}
+			},
+
+			// Get posting user
+			function (post, callback) {
+				if (post) {
+					Database.findOne({
+						'model': User,
+						'query': {
+							'guid': post.user,
+						}
+					}, function (err, user) {
+						if (user) {
+							thisObject.postingUserName = user.name;
+						}
+						callback();
+					});
+				} else {
+					callback();
+				}
+			},
+
+		], function (err) {
+			callback(err, thisObject);
+		})
 	};
 
 };

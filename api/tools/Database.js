@@ -16,6 +16,20 @@ module.exports.findOne = function ({model, query}, callback) {
 };
 
 /**
+ * Finds all objects in the database for a query using model
+ * @memberof tools/Database
+ * @param {Object} params
+ * @param {Object} params.model Mongoose model object
+ * @param {Object} params.query MongoDB query object
+ * @param {function (err, objects)} callback Callback function
+ */
+module.exports.find = function ({model, query}, callback) {
+    model.find(query, function (err, objects) {
+        callback(err, objects);
+    });
+};
+
+/**
  * Finds a limited, sorted list of objects in the database using model
  * @memberof tools/Database
  * @param {Object} params

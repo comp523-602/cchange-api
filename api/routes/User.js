@@ -8,6 +8,7 @@ const Validation = require('./../tools/Validation');
 const Secretary = require('./../tools/Secretary');
 const Messages = require('./../tools/Messages');
 const Dates = require('./../tools/Dates');
+const Paging = require('./../tools/Paging');
 
 // Initialize config
 const config = require('./../../config');
