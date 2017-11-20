@@ -25,5 +25,6 @@
   * @apiParam {Number} [pageSize = 20] Number of objects to get back (min 1, max 20)
   * @apiParam {String} [sort = "asc"] Ascending (asc) or descending (desc) sort order
   * @apiParam {String} [sortKey = "dateCreated"] Object property to sort by
+  * @apiParam {Number} [pageNumber = 0] Page number (number of objects to skip in sorted query)
   *
   */

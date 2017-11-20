@@ -37,6 +37,7 @@ module.exports.find = function ({model, query}, callback) {
  * @param {Object} params.query MongoDB query object
  * @param {Number} params.pageSize Number of objects needed
  * @param {String} params.sort Object property to sort by
+ * @param {Number} params.skip Number of objects to skip at the beginning of sorted query
  * @param {function (err, objects)} callback Callback function
  */
 module.exports.page = function ({model, query, pageSize, sort, skip}, callback) {
