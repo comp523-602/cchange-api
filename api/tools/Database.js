@@ -39,8 +39,8 @@ module.exports.find = function ({model, query}, callback) {
  * @param {String} params.sort Object property to sort by
  * @param {function (err, objects)} callback Callback function
  */
-module.exports.page = function ({model, query, pageSize, sort}, callback) {
-	model.find(query).sort(sort).limit(pageSize).exec(function (err, objects) {
+module.exports.page = function ({model, query, pageSize, sort, skip}, callback) {
+	model.find(query).sort(sort).skip(skip).limit(pageSize).exec(function (err, objects) {
 		callback(err, objects);
 	});
 };

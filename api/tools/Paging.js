@@ -10,6 +10,7 @@ const Validation = require('./Validation');
 const PageSize = 20;
 const Sort = "asc";
 const SortKey = "dateCreated";
+const PageNumber = 0;
 
 /**
  * Handles default paging behavior, uses Database to page object
@@ -46,6 +47,7 @@ function pageObjects ({model, query, params}, callback) {
 			var pageSize = (params.pageSize == null) ? PageSize : params.pageSize;
 			var sort = (params.sort == null) ? Sort : params.sort;
 			var sortKey = (params.sortKey == null) ? SortKey : params.sortKey;
+			var pageNumber = (params.pageNumber == null) ? PageNumber : params.pageNumber;
 
 			// Setup pageSort with sort and sortKey
 			var pageSort = "";
@@ -57,6 +59,7 @@ function pageObjects ({model, query, params}, callback) {
 				'query': query,
 				'pageSize': pageSize,
 				'sort': pageSort,
+				'skip': pageNumber*pageSize,
 			}, function (err, objects) {
 				callback(err, objects);
 			})
