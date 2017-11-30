@@ -153,6 +153,7 @@ module.exports = function (server) {
 	 *
 	 * @apiSuccess {Object} donation Donation object
 	 * @apiSuccess {Object} charity Charity object
+	 * @apiSuccess {Object} user Donating user object
 	 * @apiSuccess {Object} [campaign] Campaign object (if campaign or post provided)
 	 * @apiSuccess {Object} [post] Post object (if post provided)
 	 *
