@@ -50,6 +50,12 @@ function UserProperties (schema) {
 			'required': true
 		},
 
+		// Balance: the user's balance, in cents
+		'balance': {
+			'type': Number,
+			'default': 0,
+		},
+
 		// Charity: GUID of charity which user belongs to, used to distinguish user types
 		'charity': {
 			'type': String,
@@ -392,7 +398,7 @@ function UserInstanceMethods (schema) {
 	 * @memberof model/User#
 	 * @param {Object} params
 	 * @param {Object} params.post Post object
-	 * @param {function(err, update)} callback Callback function
+	 * @param {function(err, user)} callback Callback function
 	 */
 	schema.methods.addPost = function ({post}, callback) {
 
@@ -422,13 +428,50 @@ function UserInstanceMethods (schema) {
 	};
 
 	/**
+	 * Updates an existing user's balance
+	 * @memberof model/User#
+	 * @param {Object} params
+	 * @param {Number} [params.name] Name of user
+	 * @param {function(err, user)} callback Callback function
+	 */
+	schema.methods.updateBalance = function ({change}, callback) {
+
+		// Save reference to model
+		var User = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Setup database update
+		var update = {
+			'$set': {
+				'lastModified': Dates.now(),
+			},
+			'$inc': {
+				'balance': change,
+			},
+		};
+
+		// Make database update
+		Database.update({
+			'model': User.constructor,
+			'query': query,
+			'update': update,
+		}, function (err, user) {
+			callback(err, user);
+		});
+	};
+
+	/**
 	 * Updates an existing user
 	 * @memberof model/User#
 	 * @param {Object} params
 	 * @param {String} [params.name] Name of user
 	 * @param {String} [params.bio] User bio
 	 * @param {String} [params.picture] Image URL of user picture
-	 * @param {function(err, update)} callback Callback function
+	 * @param {function(err, user)} callback Callback function
 	 */
 	schema.methods.edit = function ({name, bio, picture}, callback) {
 

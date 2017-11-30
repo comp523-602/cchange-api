@@ -181,7 +181,7 @@ module.exports = function (server) {
 				callback(Validation.catchErrors(fields), token);
 			},
 
-			// Get user object with token
+			// Get user object with token, check if enough funds are available
 			function (token, callback) {
 				Database.findOne({
 					'model': User,
@@ -190,7 +190,11 @@ module.exports = function (server) {
 					}
 				}, function (err, user) {
 					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
-					else callback(err, user);
+					else {
+						if (req.body.amount > user.balance) {
+							callback(Secretary.conflictError(Messages.conflictErrors.insufficientFunds));
+						} else callback(err, user);
+					}
 				})
 			},
 
@@ -249,6 +253,15 @@ module.exports = function (server) {
 				}
 			},
 
+			// Decrement user's funds
+			function (user, post, campaign, charity, callback) {
+				user.updateBalance({
+					'change': 0-req.body.amount,
+				}, function (err, user) {
+					callback(err, user, post, campaign, charity);
+				});
+			},
+
 			// Make donation, add to request
 			function (user, post, campaign, charity, callback) {
 				Donation.create({
@@ -267,11 +280,16 @@ module.exports = function (server) {
 				})
 			},
 
-			// Add donation to user
+			// Add donation to user, attach to response
 			function (user, post, campaign, charity, donation, callback) {
 				user.addDonation({
 					'donation': donation
-				}, function (err) {
+				}, function (err, user) {
+					if (user) Secretary.addToResponse({
+						'response': res,
+						'key': "user",
+						'value': user
+					});
 					callback(err, post, campaign, charity, donation);
 				})
 			},

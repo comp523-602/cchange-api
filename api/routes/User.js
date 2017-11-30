@@ -428,7 +428,8 @@ module.exports = function (server) {
 					Secretary.addToResponse({
 						'response': res,
 						'key': "token",
-						'value': token
+						'value': token,
+						'noFormat': true
 					})
 					callback(err);
 				});
@@ -495,6 +496,71 @@ module.exports = function (server) {
 					'name': req.body.name,
 					'bio': req.body.bio,
 					'picture': req.body.picture,
+				}, function (err, user) {
+					if (user) Secretary.addToResponse({
+						'response': res,
+						'key': "user",
+						'value': user,
+					});
+					callback(err, user);
+				});
+			},
+
+		], function (err) {
+			if (err) next(err);
+			else Secretary.respond(req, res);
+		});
+	})
+
+	/**
+	 * @memberof apiDocs
+	 * @api {POST} /user.addFunds Add Funds
+	 * @apiName Add Funds
+	 * @apiGroup User
+	 * @apiDescription Adds funds to a users balance
+	 *
+	 * @apiParam {Number} amount Amount of funds to add (in cents)
+	 *
+	 * @apiSuccess {Object} user User object
+	 *
+	 * @apiUse Error
+	 */
+	server.post('/user.addFunds', function (req, res, next) {
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			function (callback) {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Validate fields
+			function (token, callback) {
+				callback(Validation.catchErrors([
+					Validation.positiveNumber('Amount', req.body.amount)
+				]), token);
+			},
+
+			// Find user using token
+			function (token, callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user,
+					},
+				}, function (err, user) {
+					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, user);
+				});
+			},
+
+			// Update user's balance, add to reply
+			function (user, callback) {
+				user.updateBalance({
+					'change': req.body.amount,
 				}, function (err, user) {
 					if (user) Secretary.addToResponse({
 						'response': res,

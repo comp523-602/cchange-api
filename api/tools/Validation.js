@@ -33,7 +33,7 @@ function isInvalidString (input) {
 };
 
 function isInvalidNumber (input) {
-	if (input == null)
+	if (input === null)
 		return Messages.fieldErrors.missing;
 	if (!(typeof input === 'number'))
 		return Messages.typeErrors.number;
@@ -57,9 +57,9 @@ function isInvalidLength (input, minlength, maxlength) {
 
 // Number validation functions =================================================
 function isInvalidSize (input, min, max) {
-	if (min && input < min)
+	if (min !== undefined && input < min)
 		return " must be greater than " + min;
-	if (max && input > max)
+	if (max !== undefined && input > max)
 		return " must be less than " + max;
 	return null;
 }
@@ -159,6 +159,20 @@ module.exports.string = function (name, input) {
 module.exports.number = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidNumber(input),
+	], name);
+};
+
+/**
+ * Returns error with positive number input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
+module.exports.positiveNumber = function (name, input) {
+	return getNamedErrorFromArray([
+		isInvalidNumber(input),
+		isInvalidSize(input, 0),
 	], name);
 };
 
