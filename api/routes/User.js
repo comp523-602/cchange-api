@@ -17,6 +17,10 @@ const config = require('./../../config');
 const User = require('./../model/User');
 const CharityToken = require('./../model/CharityToken');
 const Charity = require('./../model/Charity');
+const Campaign = require('./../model/Campaign');
+const Update = require('./../model/Update');
+const Donation = require('./../model/Donation');
+const Post = require('./../model/Donation');
 
 // Attach user endpoints to server
 module.exports = function (server) {
@@ -841,6 +845,136 @@ module.exports = function (server) {
 			if (err) next(err);
 			else Secretary.respond(req, res);
 		});
+	})
+
+	/**
+	 * @memberof apiDocs
+	 * @api {POST} /user.causesFeed Causes Feed
+	 * @apiName Causes Feed
+	 * @apiGroup User
+	 * @apiDescription Queries a list of campaigns and updates from charities a user follows
+	 * @apiUse Paging
+	 *
+	 * @apiSuccess {Array} causesFeed Array of campaign and update objects
+	 *
+	 * @apiUse Error
+	 */
+	server.post('/user.causesFeed', function (req, res, next) {
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			function (callback) {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Find user using token
+			function (token, callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user,
+					},
+				}, function (err, user) {
+					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, user);
+				});
+			},
+
+			// Find updates using followingCharities and add to request
+			function (user, callback) {
+
+				// Page objects
+				Paging.pageObjects({
+					'models': [Campaign, Update],
+					'query': {
+						'charity': {
+							$in: user.followingCharities,
+						},
+					},
+					'params': req.body,
+				}, function (err, objects) {
+					Secretary.addToResponse({
+						'response': res,
+						'key': "causesFeed",
+						'value': objects
+					});
+					callback(err);
+				});
+			},
+
+		], function (err) {
+			if (err) next(err);
+			else Secretary.respond(req, res);
+		})
+	})
+
+	/**
+	 * @memberof apiDocs
+	 * @api {POST} /user.peopleFeed People Feed
+	 * @apiName People Feed
+	 * @apiGroup User
+	 * @apiDescription Queries a list of donations and posts from users a user follows
+	 * @apiUse Paging
+	 *
+	 * @apiSuccess {Array} peopleFeed Array of donation and user objects
+	 *
+	 * @apiUse Error
+	 */
+	server.post('/user.peopleFeed', function (req, res, next) {
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			function (callback) {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Find user using token
+			function (token, callback) {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user,
+					},
+				}, function (err, user) {
+					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
+					else callback(err, user);
+				});
+			},
+
+			// Find updates using followingCharities and add to request
+			function (user, callback) {
+
+				// Page objects
+				Paging.pageObjects({
+					'models': [Donation, Post],
+					'query': {
+						'user': {
+							$in: user.followingUsers,
+						},
+					},
+					'params': req.body,
+				}, function (err, objects) {
+					Secretary.addToResponse({
+						'response': res,
+						'key': "peopleFeed",
+						'value': objects
+					});
+					callback(err);
+				});
+			},
+
+		], function (err) {
+			if (err) next(err);
+			else Secretary.respond(req, res);
+		})
 	})
 
 };

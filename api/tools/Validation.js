@@ -150,6 +150,19 @@ module.exports.string = function (name, input) {
 };
 
 /**
+ * Returns error with number input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
+module.exports.number = function (name, input) {
+	return getNamedErrorFromArray([
+		isInvalidNumber(input),
+	], name);
+};
+
+/**
  * Returns error with currency input
  * @memberof tools/Validation
  * @param {String} name Name of field
