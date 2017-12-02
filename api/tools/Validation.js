@@ -186,7 +186,7 @@ module.exports.positiveNumber = function (name, input) {
 module.exports.currency = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidNumber(input),
-		isInvalidSize(input, 0, 10000)
+		isInvalidSize(input, 1, 10000)
 	], name);
 };
 

@@ -7,6 +7,9 @@ const Database = require('./../tools/Database');
 const Dates = require('./../tools/Dates');
 const Authentication = require('./../tools/Authentication');
 
+// Initialize model dependencies
+const Donation = require('./Donation');
+
 // User Properties: configures properties for database object
 function UserProperties (schema) {
     schema.add({
@@ -214,6 +217,25 @@ function UserInstanceMethods (schema) {
 					},
 				}, function (err, objects) {
 					if (objects) thisObject.followers = objects.length;
+					callback();
+				})
+			},
+
+			// Attach total donation amount
+			function (callback) {
+				Database.find({
+					'model': Donation,
+					'query': {
+						'user': thisObject.guid
+					},
+				}, function (err, donations) {
+					if (donations) {
+						thisObject.totalDonationAmount = 0
+						for (var i in donations) {
+							console.log(donations[i].amount);
+							thisObject.totalDonationAmount += donations[i].amount;
+						}
+					}
 					callback();
 				})
 			},

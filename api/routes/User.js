@@ -1018,12 +1018,16 @@ module.exports = function (server) {
 			// Find updates using followingCharities and add to request
 			function (user, callback) {
 
+				// Setup query array
+				var usersToQuery = user.followingUsers;
+				usersToQuery.push(user.guid);
+
 				// Page objects
 				Paging.pageObjects({
 					'models': [Donation, Post],
 					'query': {
 						'user': {
-							$in: user.followingUsers,
+							$in: usersToQuery,
 						},
 					},
 					'params': req.body,
