@@ -115,7 +115,7 @@ module.exports = function (server) {
 				if (req.body.charity) query.charity = req.body.charity;
 				if (req.body.campaign) query.campaign = req.body.campaign;
 				if (req.body.post) query.post = req.body.post;
-				if (req.body.user) query.charity = req.body.user;
+				if (req.body.user) query.user = req.body.user;
 
 				// Page objects
 				Paging.pageObjects({
