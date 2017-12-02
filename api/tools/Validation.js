@@ -4,6 +4,7 @@
 // Initialize dependencies
 const Messages = require('./Messages');
 const Secretary = require('./Secretary');
+const Types = require('./Types');
 
 // Validation helper functions =================================================
 function getErrorsFromArray (errors) {
@@ -93,6 +94,14 @@ function isInvalidImageURL (input) {
 	return null;
 };
 
+function isInvalidCategory (input) {
+	var categories = Types.categories;
+	for (var key in categories) {
+		if (input == categories[key]) return null;
+	}
+	return Messages.fieldErrors.invalidCategoryType;
+};
+
 // Exports =====================================================================
 
 /**
@@ -159,6 +168,20 @@ module.exports.string = function (name, input) {
 module.exports.number = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidNumber(input),
+	], name);
+};
+
+/**
+ * Returns error with category input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
+module.exports.category = function (name, input) {
+	return getNamedErrorFromArray([
+		isInvalidString(input),
+		isInvalidCategory(input)
 	], name);
 };
 

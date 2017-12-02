@@ -22,4 +22,42 @@ module.exports = {
 		 */
 		'charity': "AUTHORIZED_CHARITY_USER",
 	},
+	'categories': {
+
+		/**
+		 * Environment category type
+		 * @memberof tools/Types
+		 */
+		'environment': "Environment",
+
+		/**
+		 * Education category type
+		 * @memberof tools/Types
+		 */
+		'education': "Education",
+
+		/**
+		 * Social Justice category type
+		 * @memberof tools/Types
+		 */
+		'socialJustice': "Social Justice",
+
+		/**
+		 * Health category type
+		 * @memberof tools/Types
+		 */
+		'health': "Health",
+
+		/**
+		 * Housing category type
+		 * @memberof tools/Types
+		 */
+		'housing': "Housing",
+
+		/**
+		 * Animal protection category type
+		 * @memberof tools/Types
+		 */
+		'animalProtection': "Animal Protection",
+	},
 };

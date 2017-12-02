@@ -8,10 +8,10 @@ const Database = require('./../tools/Database');
 const Dates = require('./../tools/Dates');
 
 // Initialize external models
-const Charity = require('./Charity.js');
-const Campaign = require('./Campaign.js');
-const User = require('./User.js');
-const Post = require('./Post.js');
+const Charity = require('./Charity');
+const Campaign = require('./Campaign');
+const User = require('./User');
+const Post = require('./Post');
 
 // Initialize config
 const config = require('./../../config');
@@ -129,7 +129,7 @@ function DonationStaticMethods (schema) {
 function DonationInstanceMethods (schema) {
 
 	/**
-	 * Formats a campaign object to be returned to the client
+	 * Formats a donation object to be returned to the client
 	 * @memberof model/Donation#
 	 * @param {Object} params
 	 * @param {Object} params.req Express.js request object

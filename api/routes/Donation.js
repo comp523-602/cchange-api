@@ -88,7 +88,7 @@ module.exports = function (server) {
 	 * @apiParam {String} [post] Filter donations made to a single post
 	 * @apiParam {String} [user] Filter donations made by a single user
 	 *
-	 * @apiSuccess {Array} updates Array of donation objects
+	 * @apiSuccess {Array} donations Array of donation objects
 	 *
 	 * @apiUse Error
 	 */

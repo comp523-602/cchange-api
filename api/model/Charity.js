@@ -84,6 +84,12 @@ function CharityProperties (schema) {
 			'default': [],
 		},
 
+		// Categories: GUID of the categories this charity belongs to
+		'categories': {
+			'type': Array,
+			'default': [],
+		},
+
     });
 };
 
@@ -251,14 +257,15 @@ function CharityInstanceMethods (schema) {
 	};
 
 	/**
-	 * Adds a campaign to the campaigns array
+	 * Adds a campaign and a category to the appropriate arrays
 	 * @memberof model/Charity#
 	 * @param {Object} params
 	 * @param {Object} params.campaign Campaign object to be added
+	 * @param {String} params.category Category string to be added
 	 * @param {Object} params.token Decoded authentication token object
 	 * @param {function(err, charity)} callback Callback function
 	 */
-	schema.methods.addCampaign = function ({campaign, token}, callback) {
+	schema.methods.addCampaignAndCategory = function ({campaign, category, token}, callback) {
 
 		// Authenicate user
 		if (!authenticatedToken(this, token))
@@ -276,7 +283,10 @@ function CharityInstanceMethods (schema) {
 		var update = {
 			'$push': {
 				'campaigns': campaign.guid,
-			}
+			},
+			'$addToSet': {
+				'categories': category,
+			},
 		};
 
 		// Make database update
@@ -287,6 +297,66 @@ function CharityInstanceMethods (schema) {
 		}, function (err, charity) {
 			callback(err, charity);
 		});
+	};
+
+	/**
+	 * Swaps one category for another
+	 * @memberof model/Charity#
+	 * @param {Object} params
+	 * @param {String} params.categoryToAdd Category string to be added
+	 * @param {String} params.categoryToRemove Category string to be removed
+	 * @param {Object} params.token Decoded authentication token object
+	 * @param {function(err, charity)} callback Callback function
+	 */
+	schema.methods.swapCategories = function ({categoryToAdd, categoryToRemove, token}, callback) {
+
+		// Authenicate user
+		if (!authenticatedToken(this, token))
+			return callback(Secretary.authenticationError(Messages.authErrors.noAccess));
+
+		// Save reference to model
+		var Charity = this;
+
+		// Setup query with GUID
+		var query = {
+			'guid': this.guid,
+		};
+
+		// Remove categoryToRemove, add categoryToAdd
+		Async.waterfall([
+
+			function (callback) {
+				Database.update({
+					'model': Charity.constructor,
+					'query': query,
+					'update': {
+						'$pull': {
+							'categories': categoryToRemove,
+						},
+					},
+				}, function (err, charity) {
+					callback(err);
+				});
+			},
+
+			function (callback) {
+				Database.update({
+					'model': Charity.constructor,
+					'query': query,
+					'update': {
+						'$addToSet': {
+							'categories': categoryToAdd,
+						},
+					},
+				}, function (err, charity) {
+					callback(err, charity);
+				});
+			},
+
+		], function (err, charity) {
+			callback(err, charity);
+		})
+
 	};
 
 	/**

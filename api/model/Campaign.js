@@ -78,6 +78,11 @@ function CampaignProperties (schema) {
 			'default': [],
 		},
 
+		// Category: campaign category string
+		'category': {
+			'type': String,
+		},
+
     });
 };
 
@@ -89,12 +94,13 @@ function CampaignStaticMethods (schema) {
 	 * @memberof model/Campaign
 	 * @param {Object} params
 	 * @param {String} params.name Name of campaign
+	 * @param {String} params.cateogry Category of campaign
 	 * @param {String} [params.description] Campaign description
 	 * @param {Array} [params.pictures] Array of image URLs
 	 * @param {Object} params.charity Charity object
 	 * @param {function(err, campaign)} callback Callback function
 	 */
-	schema.statics.create = function ({name, description, pictures, charity}, callback) {
+	schema.statics.create = function ({name, category, description, pictures, charity}, callback) {
 
 		// Save reference to model
 		var Campaign = this;
@@ -121,6 +127,7 @@ function CampaignStaticMethods (schema) {
 				var set = {
 					'guid': GUID,
 					'name': name,
+					'category': category,
 					'charity': charity.guid,
 					'dateCreated': Dates.now(),
 				};
@@ -259,12 +266,13 @@ function CampaignInstanceMethods (schema) {
 	 * @memberof model/Campaign#
 	 * @param {Object} params
 	 * @param {String} [params.name] Name of campaign
+	 * @param {String} [params.category] Category of campaign
 	 * @param {String} [params.description] Campaign description
 	 * @param {Array} [params.pictures] Array of image URLs
 	 * @param {Object} params.token Decoded authentication token object
 	 * @param {function(err, campaign)} callback Callback function
 	 */
-	schema.methods.edit = function ({name, description, pictures, token}, callback) {
+	schema.methods.edit = function ({name, description, category, pictures, token}, callback) {
 
 		// Authenicate user
 		if (!authenticatedToken(this, token))
@@ -283,6 +291,7 @@ function CampaignInstanceMethods (schema) {
 			'lastModified': Dates.now(),
 		};
 		if (name) set.name = name;
+		if (category) set.category = category;
 		if (description) set.description = description;
 		if (pictures) set.pictures = pictures;
 		var update = {

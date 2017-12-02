@@ -49,6 +49,7 @@ module.exports = {
 		'isInvalid': " is invalid",
 		'sortKey': " is not a valid sort key",
 		'invalidImageURL': " is not a valid image URL",
+		'invalidCategoryType': " is not a valid category",
 	},
 
 	/**

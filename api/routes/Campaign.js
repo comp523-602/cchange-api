@@ -157,9 +157,11 @@ module.exports = function (server) {
 
 			// Validate required fields
 			function (token, callback) {
+				if (req.body.category) categoryFieldLabel = req.body.category;
+				else categoryFieldLabel = "Category";
 				var fields = [
 					Validation.string('Name', req.body.name),
-
+					Validation.category(categoryFieldLabel, req.body.category),
 				];
 				if (req.body.description) fields.push(Validation.string('Description', req.body.description));
 				if (req.body.pictures) fields.push(Validation.imageUrlArray('Pictures', req.body.pictures));
@@ -184,6 +186,7 @@ module.exports = function (server) {
 				Campaign.create({
 					'charity': charity,
 					'name': req.body.name,
+					'category': req.body.category,
 					'description': req.body.description,
 					'pictures': req.body.pictures,
 				}, function (err, campaign) {
@@ -198,11 +201,17 @@ module.exports = function (server) {
 
 			// Add campaign to charity
 			function (token, charity, campaign, callback) {
-				charity.addCampaign({
+				charity.addCampaignAndCategory({
 					'token': token,
-					'campaign': campaign
+					'campaign': campaign,
+					'category': req.body.category,
 				}, function (err, charity) {
-					callback(err)
+					if (charity) Secretary.addToResponse({
+						'response': res,
+						'key': "charity",
+						'value': charity
+					})
+					callback(err);
 				});
 			},
 
@@ -247,6 +256,7 @@ module.exports = function (server) {
 					Validation.string('Campaign ID', req.body.campaign),
 				];
 				if (req.body.name) fields.push(Validation.string('Name', req.body.name));
+				if (req.body.category) fields.push(Validation.category(req.body.category, req.body.category));
 				if (req.body.description) fields.push(Validation.string('Description', req.body.description));
 				if (req.body.pictures) fields.push(Validation.imageUrlArray('Pictures', req.body.pictures));
 				callback(Validation.catchErrors(fields), token);
@@ -265,11 +275,42 @@ module.exports = function (server) {
 				})
 			},
 
+			// Update charity if applicable
+			function (token, campaign, callback) {
+				if (req.body.category) {
+					Database.findOne({
+						'model': Charity,
+						'query': {
+							'guid': campaign.charity,
+						}
+					}, function (err, charity) {
+						if (charity) {
+							charity.swapCategories({
+								'token': token,
+								'categoryToRemove': campaign.category,
+								'categoryToAdd': req.body.category,
+							}, function (err, charity) {
+								if (charity) Secretary.addToResponse({
+									'response': res,
+									'key': "charity",
+									'value': charity
+								});
+								callback(err, token, campaign);
+							})
+						}
+						else callback(err, token, campaign);
+					})
+				} else {
+					callback(null, token, campaign);
+				}
+			},
+
 			// Create campaign
 			function (token, campaign, callback) {
 				campaign.edit({
 					'token': token,
 					'name': req.body.name,
+					'category': req.body.category,
 					'description': req.body.description,
 					'pictures': req.body.pictures,
 				}, function (err, campaign) {
