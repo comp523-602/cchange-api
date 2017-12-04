@@ -102,6 +102,19 @@ function isInvalidCategory (input) {
 	return Messages.fieldErrors.invalidCategoryType;
 };
 
+function isInvalidObjectType (input) {
+	switch (input) {
+		case "user":
+		case "post":
+		case "charity":
+		case "campaign":
+		case "update":
+		case "donation":
+			return null;
+	}
+	return Messages.fieldErrors.invalidObjectType;
+};
+
 // Exports =====================================================================
 
 /**
@@ -182,6 +195,20 @@ module.exports.category = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidString(input),
 		isInvalidCategory(input)
+	], name);
+};
+
+/**
+ * Returns error with object type input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
+module.exports.objectType = function (name, input) {
+	return getNamedErrorFromArray([
+		isInvalidString(input),
+		isInvalidObjectType(input)
 	], name);
 };
 

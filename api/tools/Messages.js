@@ -50,6 +50,7 @@ module.exports = {
 		'sortKey': " is not a valid sort key",
 		'invalidImageURL': " is not a valid image URL",
 		'invalidCategoryType': " is not a valid category",
+		'invalidObjectType': " is not a valid object type",
 	},
 
 	/**
