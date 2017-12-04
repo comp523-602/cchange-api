@@ -237,6 +237,22 @@ function UserInstanceMethods (schema) {
 				})
 			},
 
+			// Attach charityName if applicable
+			function (callback) {
+				if (thisObject.charity) {
+					const Charity = require('./Charity.js');
+					Database.findOne({
+						'model': Charity,
+						'query': {
+							'guid': thisObject.charity
+						},
+					}, function (err, charity) {
+						if (charity) thisObject.charityName = charity.name;
+						callback();
+					})
+				} else callback();
+			},
+
 		], function (err) {
 			callback(err, thisObject);
 		})

@@ -158,7 +158,10 @@ module.exports = function (server) {
 			// Validate required fields
 			function (token, callback) {
 				if (req.body.category) categoryFieldLabel = req.body.category;
-				else categoryFieldLabel = "Category";
+				else {
+					categoryFieldLabel = "Category";
+					req.body.category = "Education";
+				}
 				var fields = [
 					Validation.string('Name', req.body.name),
 					Validation.category(categoryFieldLabel, req.body.category),
