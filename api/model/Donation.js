@@ -219,6 +219,7 @@ function DonationInstanceMethods (schema) {
 						}
 					}, function (err, user) {
 						if (user) {
+							thisObject.postingUser = user.guid;
 							thisObject.postingUserName = user.name;
 						}
 						callback();
