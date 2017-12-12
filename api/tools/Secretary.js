@@ -43,15 +43,15 @@ function formatAndAttachObjects(request, response, callback) {
 	// Format all objects in objectsToFormat
 	Async.eachOf(response.objectsToFormat, function (object, key, callback) {
 
-		// Format array
+		// Format array (maintains order using index)
 		if (object instanceof Array) {
-			var formattedObjects = [];
-			Async.each(object, function (arrayObject, callback) {
+			var formattedObjects = new Array(object.length);
+			Async.eachOf(object, function (arrayObject, index, callback) {
 				arrayObject.format({
 					'req': request,
 					'res': response,
 				}, function (err, formattedObject) {
-					if (formattedObject) formattedObjects.push(removePrivateKeys(formattedObject));
+					if (formattedObject) formattedObjects[index] = removePrivateKeys(formattedObject);
 					callback(err);
 				});
 			}, function (err) {

@@ -9,7 +9,7 @@ const Secretary = require('./Secretary');
 
 // Default paging options
 const PageSize = 20;
-const Sort = "asc";
+const Sort = "desc";
 const SortKey = "dateCreated";
 const PageNumber = 0;
 
@@ -87,7 +87,7 @@ module.exports = {
 								else if (a[sortKey] > b[sortKey]) return -1;
 								return 0;
 							}
-						}).splice(pageSize*pageNumber, (pageSize*pageNumber)+pageSize-1);
+						}).splice(pageSize*pageNumber, (pageSize*pageNumber)+pageSize);
 						callback(err, allObjects)
 					})
 				}
