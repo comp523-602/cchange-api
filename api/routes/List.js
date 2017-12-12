@@ -326,7 +326,7 @@ module.exports = function (server) {
 	/**
  	* @memberof apiDocs
  	* @api {POST} /list.followers Followers
- 	* @apiName Type
+ 	* @apiName Followers
  	* @apiGroup List
  	* @apiDescription Queries a list of users by the user or charity they follow
  	*
@@ -389,7 +389,7 @@ module.exports = function (server) {
 	/**
 	* @memberof apiDocs
 	* @api {POST} /list.following Following
-	* @apiName Type
+	* @apiName Following
 	* @apiGroup List
 	* @apiDescription Queries a list of charities or users by the users for follow them
 	*
