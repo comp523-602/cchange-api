@@ -193,6 +193,8 @@ module.exports = function (server) {
 	* @apiParam {String} [campaign] Limit objects by campaign
 	* @apiParam {String} [post] Limit objects by post
 	* @apiParam {String} [user] Limit objects by user
+	* @apiParam {String} [keyword] Limit objects by keyword
+	* @apiParam {String} [category] Limit objects by category
 	* @apiUse Paging
 	*
 	* @apiSuccess {Array} objects Array of objects
@@ -214,6 +216,7 @@ module.exports = function (server) {
 				if (req.body.post) fields.push(Validation.string('Post ID (post)', req.body.post));
 				if (req.body.user) fields.push(Validation.string('User ID (user)', req.body.user));
 				if (req.body.keyword) fields.push(Validation.string('Keyword', req.body.keyword));
+				if (req.body.category) fields.push(Validation.category('Category', req.body.category));
 				callback(Validation.catchErrors(fields));
 			},
 
