@@ -51,6 +51,7 @@ function CampaignProperties (schema) {
 		// Description: description of campaign
 		'description': {
 			'type': String,
+			'index': true,
 			'default': "",
 		},
 
@@ -81,9 +82,12 @@ function CampaignProperties (schema) {
 		// Category: campaign category string
 		'category': {
 			'type': String,
+			'index': true,
 		},
 
     });
+
+	schema.index({'name': 'text', 'description': 'text'});
 };
 
 // Campaign Static Methods: attaches functionality used by the schema in general

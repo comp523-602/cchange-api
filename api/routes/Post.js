@@ -18,6 +18,7 @@ const Post = require('./../model/Post');
 const User = require('./../model/User');
 const Campaign = require('./../model/Campaign');
 const Charity = require('./../model/Charity');
+const Donation = require('./../model/Donation');
 
 // Attach campaign endpoints to server
 module.exports = function (server) {
@@ -33,6 +34,7 @@ module.exports = function (server) {
 	 * @apiParam {String} campaign GUID of campaign to support
 	 * @apiParam {String} image URL of post image
 	 * @apiParam {String} [caption] Caption for post
+	 * @apiParams {Number} [amount] Amount to donate to campaign upon post creation
 	 *
 	 * @apiSuccess {Object} post Post object
 	 *
@@ -56,7 +58,8 @@ module.exports = function (server) {
 					Validation.string('Campaign ID (campaign)', req.body.campaign),
 					Validation.imageUrl('Image', req.body.image),
 				];
-				if (req.body.caption) Validation.string('Caption', req.body.caption);
+				if (req.body.caption) fields.push(Validation.string('Caption', req.body.caption));
+				if (req.body.amount) fields.push(Validation.currency('Amount', req.body.amount));
 				callback(Validation.catchErrors(fields), token);
 			},
 
@@ -71,6 +74,15 @@ module.exports = function (server) {
 					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
 					else callback(err, user);
 				})
+			},
+
+			// Ensure user has enough funds to make donation if applicable
+			function (user, callback) {
+				if (req.body.amount) {
+					if (req.body.amount > user.balance) {
+						callback(Secretary.conflictError(Messages.conflictErrors.insufficientFunds));
+					} else callback(null, user);
+				} else callback(null, user);
 			},
 
 			// Find campaign with parameters
@@ -126,21 +138,116 @@ module.exports = function (server) {
 						'key': "post",
 						'value': post
 					});
-					callback(err, user, campaign, post);
+					callback(err, user, post, campaign, charity);
 				});
 			},
 
+			// Decrement user's funds
+			function (user, post, campaign, charity, callback) {
+				if (req.body.amount) {
+					user.updateBalance({
+						'change': 0-req.body.amount,
+					}, function (err, user) {
+						callback(err, user, post, campaign, charity);
+					});
+				} else callback(null, user, post, campaign, charity);
+			},
+
+			// Make donation, add to request
+			function (user, post, campaign, charity, callback) {
+				if (req.body.amount) {
+					Donation.create({
+						'user': user,
+						'post': post,
+						'campaign': campaign,
+						'charity': charity,
+						'amount': req.body.amount,
+					}, function (err, donation) {
+						if (donation) Secretary.addToResponse({
+							'response': res,
+							'key': "donation",
+							'value': donation
+						});
+						callback(err, user, post, campaign, charity, donation);
+					})
+				} else callback(null, user, post, campaign, charity, null);
+			},
+
+			// Add donation to user, attach to response
+			function (user, post, campaign, charity, donation, callback) {
+				if (donation) {
+					user.addDonation({
+						'donation': donation
+					}, function (err, user) {
+						if (user) Secretary.addToResponse({
+							'response': res,
+							'key': "user",
+							'value': user
+						});
+						callback(err, user, post, campaign, charity, donation);
+					})
+				} else callback(null, user, post, campaign, charity, null);
+			},
+
+			// Add donation to post, attach to response (if applicable)
+			function (user, post, campaign, charity, donation, callback) {
+				if (post && donation) {
+					post.addDonation({
+						'donation': donation
+					}, function (err, post) {
+						if (post) Secretary.addToResponse({
+							'response': res,
+							'key': "post",
+							'value': post
+						});
+						callback(err, user, post, campaign, charity, donation);
+					});
+				} else callback(null, user, post, campaign, charity, donation);
+			},
+
+			// Add donation to campaign (if applicable)
+			function (user, post, campaign, charity, donation, callback) {
+				if (campaign && donation) {
+					campaign.addDonation({
+						'donation': donation
+					}, function (err, campaign) {
+						if (campaign) Secretary.addToResponse({
+							'response': res,
+							'key': "campaign",
+							'value': campaign
+						});
+						callback(err, user, post, campaign, charity, donation);
+					});
+				} else callback (null, user, post, campaign, charity, donation);
+			},
+
+			// Add donation to charity
+			function (user, post, campaign, charity, donation, callback) {
+				if (charity && donation) {
+					charity.addDonation({
+						'donation': donation
+					}, function (err, charity) {
+						if (charity) Secretary.addToResponse({
+							'response': res,
+							'key': "charity",
+							'value': charity
+						});
+						callback(err, user, post, campaign);
+					});
+				} else callback(null, user, post, campaign);
+			},
+
 			// Add post to user
-			function (user, campaign, post, callback) {
+			function (user, post, campaign, callback) {
 				user.addPost({
 					'post': post
 				}, function (err) {
-					callback(err, campaign, post)
+					callback(err, post, campaign)
 				});
 			},
 
 			// Add post to campaign
-			function (campaign, post, callback) {
+			function (post, campaign, callback) {
 				campaign.addPost({
 					'post': post
 				}, function (err) {

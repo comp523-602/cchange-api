@@ -45,6 +45,7 @@ function CharityProperties (schema) {
 		// Description: description of charity
 		'description': {
 			'type': String,
+			'index': true,
 			'default': "",
 		},
 
@@ -87,10 +88,13 @@ function CharityProperties (schema) {
 		// Categories: GUID of the categories this charity belongs to
 		'categories': {
 			'type': Array,
+			'index': true,
 			'default': [],
 		},
 
     });
+
+	schema.index({'name': 'text', 'description': 'text'});
 };
 
 // Charity Static Methods: attaches functionality used by the schema in general

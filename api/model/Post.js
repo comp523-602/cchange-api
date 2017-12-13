@@ -46,6 +46,13 @@ function PostProperties (schema) {
 			'required': true,
 		},
 
+		// Category: Category of the campaign this post supports
+		'category': {
+			'type': String,
+			'index': true,
+			'required': true,
+		},
+
 		// Charity: GUID of the charity this post supports
 		'charity': {
 			'type': String,
@@ -67,6 +74,7 @@ function PostProperties (schema) {
 		// Caption: Caption for the post
 		'caption': {
 			'type': String,
+			'index': true,
 		},
 
 		// Donations: donations made to post
@@ -76,6 +84,8 @@ function PostProperties (schema) {
 		},
 
     });
+
+	schema.index({'caption': 'text'});
 };
 
 // Post Static Methods: attaches functionality used by the schema in general
@@ -120,6 +130,7 @@ function PostStaticMethods (schema) {
 					'guid': GUID,
 					'user': user.guid,
 					'campaign': campaign.guid,
+					'category': campaign.category,
 					'charity': charity.guid,
 					'image': image,
 					'shareableImage': shareableImage,

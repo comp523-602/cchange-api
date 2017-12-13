@@ -35,12 +35,14 @@ function UserProperties (schema) {
 		// Name: the user's name
 		'name': {
 			'type': String,
+			'index': true,
 			'required': true
 		},
 
 		// Bio: the user's bio
 		'bio': {
 			'type': String,
+			'index': true,
 			'required': true
 		},
 
@@ -87,6 +89,8 @@ function UserProperties (schema) {
 		},
 
     });
+
+	schema.index({'name': 'text', 'bio': 'text'});
 };
 
 // User Static Methods: attaches functionality used by the schema in general

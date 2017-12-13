@@ -213,6 +213,7 @@ module.exports = function (server) {
 				if (req.body.campaign) fields.push(Validation.string('Campaign ID (campaign)', req.body.campaign));
 				if (req.body.post) fields.push(Validation.string('Post ID (post)', req.body.post));
 				if (req.body.user) fields.push(Validation.string('User ID (user)', req.body.user));
+				if (req.body.keyword) fields.push(Validation.string('Keyword', req.body.keyword));
 				callback(Validation.catchErrors(fields));
 			},
 
@@ -236,6 +237,23 @@ module.exports = function (server) {
 				if (req.body.campaign) query.campaign = req.body.campaign;
 				if (req.body.post) query.post = req.body.post;
 				if (req.body.user) query.user = req.body.user;
+				if (req.body.keyword) {
+					query.$text = {
+						$search: req.body.keyword,
+						$caseSensitive: false
+					};
+				}
+				if (req.body.category) {
+					switch (req.body.type) {
+						case "post":
+						case "campaign":
+							query.category = req.body.category;
+							break;
+						case "charity":
+							query.categories = req.body.category;
+							break;
+					}
+				}
 
 				// Page objects
 				Paging.pageObjects({
@@ -243,6 +261,7 @@ module.exports = function (server) {
 					'query': query,
 					'params': req.body,
 				}, function (err, objects) {
+					if (err) return callback(err);
 					if (!objects) return callback(Secretary.conflictError(Messages.conflictErrors.objectNotFound));
 					Secretary.addToResponse({
 						'response': res,

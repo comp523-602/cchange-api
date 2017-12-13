@@ -51,10 +51,13 @@ function UpdateProperties (schema) {
 		// Description: description of update
 		'description': {
 			'type': String,
+			'index': true,
 			'default': "",
 		},
 
     });
+
+	schema.index({'name': 'text', 'description': 'text'});
 };
 
 // Update Static Methods: attaches functionality used by the schema in general
