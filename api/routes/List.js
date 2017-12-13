@@ -257,6 +257,9 @@ module.exports = function (server) {
 							break;
 					}
 				}
+				if (req.body.type == "user") {
+					query.charity = null;
+				}
 
 				// Page objects
 				Paging.pageObjects({
